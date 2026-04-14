@@ -1,0 +1,527 @@
+    :root { --gap: 10px; --panelW: 430px }
+    * { box-sizing: border-box }
+    body { font-family: 'Microsoft JhengHei', system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background: #f5f7fa; color: #000 }
+
+    .toolbar { display:flex; flex-wrap:wrap; gap: var(--gap); padding: 10px; background:#fff; box-shadow: 0 2px 6px rgba(0,0,0,.08); align-items:center }
+    .toolbar label, .toolbar select, .toolbar button { font-size:14px }
+    #dateSelect { font-weight:700; min-width:200px; padding:4px 8px; border-radius:8px; border:1px solid #ccc; }
+    #dateSelect:not(:disabled) { border-color:#0052cc; color:#0052cc; }
+    body.dark-mode #dateSelect:not(:disabled) { border-color:#6bb8ff; color:#6bb8ff; }
+    #loadStatus { font-size:12px; color:#888; }
+    
+    .maBox{ display:inline-flex; align-items:center; gap:8px; padding:4px 8px; border-radius:10px; background: rgba(0,0,0,.04); }
+    .maItem{ display:inline-flex; align-items:center; gap:4px; cursor:pointer; user-select:none; }
+    .maSwatch{
+      display:inline-block;
+      width:12px;
+      height:12px;
+      border-radius:3px;
+      border:1px solid rgba(0,0,0,.25);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.15);
+    }
+    body.dark-mode .maSwatch{ border-color: rgba(255,255,255,.25); }
+    .maBtn{
+      border:none;
+      padding:6px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      background: rgba(0,0,0,.08);
+    }
+    body.dark-mode .maBtn{ background: rgba(255,255,255,.14); color:#eee; }
+    .maCfgPanel{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
+      border-radius:10px;
+      background: rgba(0,0,0,.04);
+    }
+    body.dark-mode .maCfgPanel{ background: rgba(255,255,255,.10); }
+    #maCustomInput{
+      width:120px;
+      padding:5px 8px;
+      border-radius:10px;
+      border:1px solid rgba(0,0,0,.18);
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+    body.dark-mode #maCustomInput{
+      background:#141414;
+      color:#eee;
+      border-color: rgba(255,255,255,.18);
+    }
+
+    body.dark-mode .maBox{ background: rgba(255,255,255,.10); }
+
+#themeBtn { background:#ddd; border:none; padding:6px 12px; cursor:pointer; font-weight:600; border-radius:8px }
+
+    .layout { display:flex; gap: var(--gap); padding: 10px }
+    .tpanel { width: var(--panelW); min-width: var(--panelW) }
+    .rpanel { flex: 1; min-width: 300px }
+
+    #kinfo { padding: 6px 10px; font-weight:600; color:#0052cc }
+
+    /* ====== 圖表卡（TAB：技術分析 / 走勢圖） ====== */
+    .chartCard{
+      background:#fff;
+      border-radius:10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.08);
+      overflow:hidden;
+    }
+    body.dark-mode .chartCard{ background:#111; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+
+    .chartTabs{
+      display:flex;
+      gap:8px;
+      padding:8px 10px;
+      align-items:center;
+      border-bottom:1px solid rgba(0,0,0,.08);
+      background: rgba(0,0,0,.02);
+    }
+    body.dark-mode .chartTabs{
+      background: rgba(255,255,255,.06);
+      border-bottom-color: rgba(255,255,255,.10);
+    }
+    .tabBtn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:800;
+      font-size:14px;
+      background: rgba(0,0,0,.08);
+      color:#222;
+    }
+    body.dark-mode .tabBtn{ background: rgba(255,255,255,.10); color:#eee; }
+    .tabBtn.active{
+      background: #0b57d0;
+      color:#fff;
+      box-shadow: 0 4px 10px rgba(11,87,208,.25);
+    }
+
+    .chartWrap{ position:relative; height: 600px; }
+    .chartPane{ position:absolute; inset:0; visibility:hidden; pointer-events:none; }
+    .chartPane.active{ visibility:visible; pointer-events:auto; }
+
+    #chartTA, #chartTrend{ width:100%; height:100%; }
+
+    .tbox { background:#fff; border-radius:0 0 10px 10px; box-shadow: 0 2px 6px rgba(0,0,0,.08); overflow:hidden }
+    .thead { position:sticky; top:0; background:#fff; z-index:1; border-bottom:1px solid #eee }
+    table { width:100%; border-collapse:collapse; font-size:13px }
+    th, td { padding:8px 6px; text-align:right; border-bottom:1px solid #f0f0f0 }
+    th.center, td.center { text-align:center }
+    th { color:#666; font-weight:700; cursor:pointer; user-select:none }
+    tr:hover { background:#f8fbff }
+    .strike { font-weight:700; color:#333 }
+    .td-strike { cursor:pointer; font-weight:700; color:#333; background:rgba(0,82,204,.04); }
+    .td-strike:hover { background:rgba(0,82,204,.12) !important; color:#0052cc; }
+    body.dark-mode .td-strike { color:#ccc; background:rgba(100,150,255,.05); }
+    body.dark-mode .td-strike:hover { background:rgba(100,150,255,.15) !important; color:#6bb8ff; }
+    .red { color:#d32f2f } 
+    .green { color:#1b5e20 }
+    td.price-01 {
+      background: #1b5e20 !important;
+      color: #fff !important;
+      font-weight: 900 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,.3);
+    }
+    body.dark-mode td.price-01 {
+      background: #2e7d32 !important;
+      color: #fff !important;
+    }
+    .sel { outline: 2px solid #4dabf7; background: #e7f2ff }
+
+    .btbar { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; padding: 10px; margin: 0 10px; }
+    .btbar .group { display:flex; gap:6px; align-items:center }
+    .btbar input[type=range] { width: 280px }
+    .pill { padding:4px 8px; border-radius:999px; background:#eef2ff; font-size:12px; color:#334 }
+
+    #fixedTooltip { position: fixed; top: 90px; right: 24px; z-index:1000; background: rgba(255,255,255,.95); padding:8px 12px; border-radius:10px; font-size:13px; box-shadow:0 2px 6px rgba(0,0,0,.2); display:none }
+
+    /* ===== 下單與損益 ===== */
+    .orderbar { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; padding: 10px; margin: 0 10px; background:#fff; border-radius:10px; box-shadow: 0 2px 6px rgba(0,0,0,.08) }
+    .orderbar .group { display:flex; gap:6px; align-items:center }
+    .orderbar input[type=number] { width: 90px; padding:6px }
+    .orderbar .btn { padding:6px 12px; border:none; border-radius:8px; cursor:pointer; font-weight:700 }
+    .btn-buy { background:#ffebee; color:#b71c1c }
+    .btn-sell{ background:#e8f5e9; color:#1b5e20 }
+    .orderbar .stat { margin-left:auto; display:flex; gap:8px; align-items:center }
+
+    .account { display:grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: var(--gap); padding: 10px; margin: 0 10px }
+    .card { background:#fff; border-radius:10px; box-shadow: 0 2px 6px rgba(0,0,0,.08); padding:10px }
+    .card h4 { margin:6px 0 10px; font-size:14px; color:#666 }
+
+    .positions, .orders, .limits { max-height: 240px; overflow:auto }
+    .tag { padding:2px 6px; border-radius:6px; background:#eef2ff; font-size:12px; color:#334 }
+
+    /* ===== 20 點回測區 ===== */
+    .bt20-card { grid-column: 1 / -1; }
+    .bt20-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:8px; font-size:12px; }
+    .bt20-controls input[type="date"],
+    .bt20-controls input[type="number"],
+    .bt20-controls select { font-size:12px; padding:2px 4px; }
+    .bt20-controls button { font-size:12px; padding:4px 8px; border-radius:6px; border:none; cursor:pointer; background:#0052cc; color:#fff; }
+    .profit { color:#d32f2f; font-weight:600; }
+    .loss   { color:#1b5e20; font-weight:600; }
+    .side-call { color:#d32f2f; font-weight:600; }
+    .side-put  { color:#1b5e20; font-weight:600; }
+
+    /* ====== 表格斑馬紋（深淺交替） ====== */
+    #tBody tr:nth-child(even) { background: rgba(0,0,0,.02); }
+    #tBody tr:nth-child(odd)  { background: #fff; }
+    #tBody tr:hover { background: #e8f0fe !important; }
+    #tBody tr.sel { background: #e7f2ff !important; }
+    #tBody tr.n20-row-both:not(.sel) { background: #fff8e1 !important; }
+
+    /* ====== 點擊回饋優化 ====== */
+    .td-c, .td-p { transition: background .1s, transform .08s; cursor: pointer; }
+    .td-c:active, .td-p:active { transform: scale(.96); background: rgba(0,82,204,.18) !important; }
+    .td-strike { transition: background .1s, transform .08s; }
+    .td-strike:active { transform: scale(.96); }
+    button, .btn, .s1-run-btn, .tabBtn, .maBtn, #themeBtn {
+      transition: background .15s, transform .08s, box-shadow .15s;
+    }
+    button:active, .btn:active, .s1-run-btn:active, .tabBtn:active, .maBtn:active, #themeBtn:active {
+      transform: scale(.95) !important;
+    }
+    select, input[type="number"], input[type="time"], input[type="date"] {
+      transition: border-color .15s, box-shadow .15s;
+    }
+    select:focus, input[type="number"]:focus, input[type="time"]:focus, input[type="date"]:focus {
+      outline: none;
+      border-color: #4dabf7;
+      box-shadow: 0 0 0 2px rgba(77,171,247,.25);
+    }
+
+    body.dark-mode { background:#1e1e1e; color:#eee }
+
+    /* -- 工具列 -- */
+    body.dark-mode .toolbar { background:#1a1a1a; box-shadow: 0 2px 6px rgba(0,0,0,.4); color:#ddd; }
+    body.dark-mode .toolbar label { color:#ccc; }
+    body.dark-mode .toolbar select,
+    body.dark-mode .toolbar button,
+    body.dark-mode .toolbar input { background:#2a2a2a; color:#eee; border-color:#444; }
+    body.dark-mode #themeBtn { background:#333; color:#eee; }
+
+    /* -- 回測控制列 -- */
+    body.dark-mode .btbar { color:#ddd; }
+    body.dark-mode .btbar label { color:#bbb; }
+    body.dark-mode .btbar button { background:#333; color:#eee; border:1px solid #555; }
+    body.dark-mode .btbar select,
+    body.dark-mode .btbar input[type="range"] { background:#2a2a2a; color:#eee; }
+    body.dark-mode .btbar input[type="time"] { background:#2a2a2a; color:#eee; border:1px solid #555; }
+    body.dark-mode .pill { background:#2a2a3a; color:#bcc; }
+
+    /* -- 下單列 -- */
+    body.dark-mode .orderbar { background:#111; box-shadow: 0 2px 6px rgba(0,0,0,.35); color:#ddd; }
+    body.dark-mode .orderbar label { color:#bbb; }
+    body.dark-mode .orderbar select,
+    body.dark-mode .orderbar input[type="number"] { background:#2a2a2a; color:#eee; border:1px solid #444; }
+    body.dark-mode .orderbar .tag { background:#2a2a3a; color:#bcc; }
+    body.dark-mode .orderbar .stat span { color:#ccc; }
+    body.dark-mode .orderbar .stat b { color:#eee; }
+    body.dark-mode .btn-buy{ background:#3b1414; color:#ffb3b3 }
+    body.dark-mode .btn-sell{ background:#142d1b; color:#b3ffd6 }
+
+    /* -- 報價表 -- */
+    body.dark-mode #chart, 
+    body.dark-mode .tbox, 
+    body.dark-mode .card { background:#111; box-shadow: 0 2px 6px rgba(0,0,0,.35) }
+    body.dark-mode .thead { background:#111; border-color:#333 }
+    body.dark-mode th { border-color:#222; color:#8899aa; }
+    body.dark-mode td { border-color:#222; color:#ddd; }
+
+    /* -- 斑馬紋（暗黑） -- */
+    body.dark-mode #tBody tr:nth-child(even) { background: rgba(255,255,255,.03); }
+    body.dark-mode #tBody tr:nth-child(odd)  { background: #111; }
+    body.dark-mode #tBody tr:hover { background: #1b2535 !important; }
+    body.dark-mode #tBody tr.sel { background: #1a2a44 !important; outline-color: #3d7ad8; }
+    body.dark-mode #tBody tr.n20-row-both:not(.sel) { background: #2a240f !important; }
+
+    /* -- 漲跌顏色（暗黑加亮） -- */
+    body.dark-mode .red { color:#ff6b6b; }
+    body.dark-mode .green { color:#66bb6a; }
+    body.dark-mode .side-call { color:#ff6b6b; }
+    body.dark-mode .side-put  { color:#66bb6a; }
+    body.dark-mode .profit { color:#ff6b6b; }
+    body.dark-mode .loss   { color:#66bb6a; }
+
+    /* -- 履約價欄 -- */
+    body.dark-mode .td-strike { color:#ccc; background:rgba(100,150,255,.05); }
+    body.dark-mode .td-strike:hover { background:rgba(100,150,255,.15) !important; color:#6bb8ff; }
+    body.dark-mode .td-c:active, body.dark-mode .td-p:active { background:rgba(100,150,255,.2) !important; }
+
+    /* -- K 線資訊 -- */
+    body.dark-mode #kinfo { color:#6bb8ff; }
+    body.dark-mode #fixedTooltip { background: rgba(24,24,24,.92); color:#eee }
+
+    /* -- 帳戶卡片 -- */
+    body.dark-mode .card h4 { color:#8899aa; }
+    body.dark-mode .card div { color:#ccc; }
+    body.dark-mode .card b { color:#eee; }
+    body.dark-mode .card label { color:#bbb; }
+    body.dark-mode .card input[type="number"] { background:#2a2a2a; color:#eee; border:1px solid #444; }
+    body.dark-mode .card .tag { background:#2a2a3a; color:#bcc; }
+    body.dark-mode .tag { background:#2a2a3a; color:#bcc; }
+
+    /* -- 帳戶表格 -- */
+    body.dark-mode .card table th { color:#8899aa; background:transparent; }
+    body.dark-mode .card table td { color:#ddd; }
+
+    /* -- 委託按鈕 -- */
+    body.dark-mode .card .btn,
+    body.dark-mode .orderbar .btn { border:1px solid #444; }
+    body.dark-mode #btnPlaceLimit { background:#333; color:#eee; }
+
+    /* -- 圖表卡與 Tab -- */
+    body.dark-mode .chartTabs { background:rgba(255,255,255,.04); border-bottom-color:rgba(255,255,255,.08); }
+
+    /* -- 選取框 focus -- */
+    body.dark-mode select:focus,
+    body.dark-mode input[type="number"]:focus,
+    body.dark-mode input[type="time"]:focus { border-color:#5599dd; box-shadow: 0 0 0 2px rgba(85,153,221,.3); }
+
+    body.dark-mode .bt20-controls button { background:#1976d2; }
+
+  
+    /* === 回測：C/P 權利金最接近 20 標記（ATM-like） === */
+    .tag { display:inline-block; padding:1px 6px; border-radius:999px; font-size:12px; line-height:18px; margin-left:6px; border:1px solid transparent; vertical-align:middle; }
+    .tag-n20c { background:#e3f2fd; color:#0d47a1; border-color:#90caf9; }
+    .tag-n20p { background:#fce4ec; color:#880e4f; border-color:#f48fb1; }
+    .tag-atm  { background:#fff8e1; color:#e65100; border-color:#ffcc02; font-weight:800; }
+    body.dark-mode .tag-atm  { background:#2b1e00; color:#ffd54f; border-color:#f9a825; }
+
+    td.n20c { outline:2px solid #64b5f6; outline-offset:-2px; background:#e3f2fd; }
+    td.n20p { outline:2px solid #f48fb1; outline-offset:-2px; background:#fce4ec; }
+    tr.n20-row-both { background:#fff8e1; }
+
+    body.dark-mode .tag-n20c { background:#0b2239; color:#b3e5fc; border-color:#1e88e5; }
+    body.dark-mode .tag-n20p { background:#2b1020; color:#f8bbd0; border-color:#d81b60; }
+    body.dark-mode td.n20c { background:#0b2239; }
+    body.dark-mode td.n20p { background:#2b1020; }
+    body.dark-mode tr.n20-row-both { background:#2a240f; }
+
+    /* ===== TX 期貨報價列（融入原網頁風格） ===== */
+    #txBar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--gap);
+      padding: 8px 10px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      border-radius: 10px 10px 0 0;
+      font-size: 13px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    body.dark-mode #txBar { background: #111; border-bottom-color: #333; box-shadow: none; }
+    body.dark-mode #greeksCard { background:#111; box-shadow:0 2px 6px rgba(0,0,0,.35); }
+    body.dark-mode #greeksHeader { background:rgba(100,150,255,.08); border-bottom-color:rgba(100,150,255,.15); color:#6bb8ff; }
+    body.dark-mode #greeksCard td { color:#ccc !important; }
+    body.dark-mode #greeksCard table td:last-child { color:#eee !important; }
+    /* 保留有色欄位（Theta / IV）不受上方覆蓋影響 */
+    body.dark-mode #gCallTheta, body.dark-mode #gPutTheta { color:#d32f2f !important; }
+    body.dark-mode #gCallIV,    body.dark-mode #gPutIV    { color:#7b2fff !important; }
+    #txBar .tx-label {
+      font-size: 12px; font-weight: 700; color: #0052cc;
+      background: #eef2ff; padding: 2px 8px;
+      border-radius: 6px; border: 1px solid #c5d3f5;
+    }
+    body.dark-mode #txBar .tx-label { background: #1a2340; color: #7eb3ff; border-color: #2a3a60; }
+    #txBar .tx-price { font-size: 17px; font-weight: 800; color: #111; }
+    body.dark-mode #txBar .tx-price { color: #eee; }
+    #txBar .tx-chg { font-size: 13px; font-weight: 700; }
+    #txBar .tx-chg.up { color: #d32f2f; }
+    #txBar .tx-chg.dn { color: #1b5e20; }
+    #txBar .tx-chg.flat { color: #888; }
+    #txBar .tx-info { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #555; margin-left: auto; }
+    body.dark-mode #txBar .tx-info { color: #aaa; }
+    #txBar .tx-hi { color: #d32f2f; }
+    #txBar .tx-lo { color: #1b5e20; }
+    #txBar .tx-open { color: #e65100; }
+    body.dark-mode #txBar .tx-hi { color: #ff6b6b; }
+    body.dark-mode #txBar .tx-lo  { color: #66bb6a; }
+    body.dark-mode #txBar .tx-open { color: #ffb74d; }
+    #txBar .tx-upload-hint { font-size: 11px; color: #999; font-style: italic; }
+
+    /* ===== 條件委託單自動下單區 ===== */
+    .s1-page { padding-bottom: 20px; }
+    .s1-hdr { display:flex; align-items:center; justify-content:space-between; padding:14px 10px 10px; border-bottom:1px solid rgba(0,0,0,.08); gap:10px; }
+    .s1-hdr-title { display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; }
+    .s1-badge { background:linear-gradient(135deg,#7b2fff,#4488ff); color:#fff; font-size:13px; font-weight:900; padding:4px 12px; border-radius:20px; }
+    .s1-run-btn { display:flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; border:none; cursor:pointer; background:linear-gradient(135deg,#7b2fff,#4488ff); color:#fff; font-size:14px; font-weight:700; white-space:nowrap; }
+    .s1-run-btn:active { opacity:.8; transform:scale(.97); }
+    .s1-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px; }
+    .s1-card { background:#f7f9ff; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:10px 12px; }
+    .s1-card-total { grid-column:1/-1; background:linear-gradient(135deg,rgba(100,60,255,.07),rgba(40,100,255,.05)); border-color:rgba(120,80,255,.2); }
+    .s1-card-lbl { font-size:11px; color:#888; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .s1-card-val { font-family:'Courier New',monospace; font-size:20px; font-weight:800; }
+    .s1-tbl-wrap { margin:0 8px 10px; }
+    .s1-config { margin:8px 8px; padding:12px; background:#f7f9ff; border:1px solid rgba(0,0,0,.08); border-radius:10px; }
+    .s1-config-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(0,0,0,.05); }
+    .s1-config-row:last-child { border-bottom:none; }
+    .s1-config-label { font-size:14px; color:#555; }
+    .s1-config-inputs { display:flex; align-items:center; gap:6px; font-size:14px; color:#888; }
+    .s1-config-inputs input, .s1-config select { background:#fff; border:1px solid rgba(0,0,0,.15); color:#333; border-radius:6px; padding:6px 8px; font-size:13px; font-family:'Courier New',monospace; }
+    .s1-status { font-size:13px; font-weight:700; padding:4px 10px; border-radius:12px; font-family:'Courier New',monospace; }
+    .s1-status.waiting { background:rgba(255,180,0,.15); color:#b87000; }
+    .s1-status.running { background:rgba(0,150,255,.12); color:#0080cc; }
+    .s1-status.stopped { background:rgba(100,100,100,.12); color:#888; }
+    .s1-tbl { width:100%; border-collapse:collapse; font-size:13px; }
+    .s1-tbl th { padding:8px 10px; text-align:center; color:#666; font-size:12px; background:#f0f3fa; border-bottom:1px solid rgba(0,0,0,.08); white-space:nowrap; }
+    .s1-tbl td { padding:10px 10px; text-align:center; font-family:'Courier New',monospace; font-size:13px; border-bottom:1px solid rgba(0,0,0,.04); }
+    .s1-order-status { display:inline-block; padding:2px 8px; border-radius:8px; font-size:11px; font-weight:700; }
+    .s1-order-status.pending { background:rgba(255,180,0,.2); color:#b87000; }
+    .s1-order-status.filled  { background:rgba(0,180,80,.15); color:#007730; }
+    .bt20-stat-section { margin:6px 8px 0; background:#f7f9ff; border:1px solid rgba(0,0,0,.08); border-radius:10px; overflow:hidden; }
+    .bt20-stat-hdr { padding:7px 12px; background:rgba(0,0,0,.04); font-size:11px; font-weight:700; color:#666; letter-spacing:1.5px; text-transform:uppercase; border-bottom:1px solid rgba(0,0,0,.06); }
+    .bt20-winner-row { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:1px solid rgba(0,0,0,.05); }
+    .bt20-winner-badge { padding:3px 10px; border-radius:20px; font-size:12px; font-weight:900; font-family:'Courier New',monospace; }
+    .bt20-winner-badge.call { background:#ffe8e8; color:#b71c1c; }
+    .bt20-winner-badge.put  { background:#e8f5e9; color:#1b5e20; }
+    .bt20-rank-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+    .bt20-rank-tbl td { padding:6px 12px; border-bottom:1px solid rgba(0,0,0,.04); font-family:'Courier New',monospace; }
+    .bt20-pattern-badge { display:inline-block; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700; font-family:'Courier New',monospace; background:#eef2ff; color:#0052cc; border:1px solid rgba(0,82,204,.2); margin:6px 12px; }
+    .bt20-sub20-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+    .bt20-sub20-tbl th { padding:6px 10px; text-align:center; color:#888; font-size:11px; background:#f0f3fa; border-bottom:1px solid rgba(0,0,0,.06); }
+    .bt20-sub20-tbl td { padding:7px 10px; text-align:center; font-family:'Courier New',monospace; border-bottom:1px solid rgba(0,0,0,.04); }
+    /* dark-mode overrides for new elements */
+    body.dark-mode .s1-card { background:#181c28; border-color:rgba(255,255,255,.08); }
+    body.dark-mode .s1-card-total { background:linear-gradient(135deg,rgba(100,60,255,.15),rgba(40,100,255,.08)); }
+    body.dark-mode .s1-card-lbl { color:#5a6a88; }
+    body.dark-mode .s1-card-val { color:#dde4f5; }
+    body.dark-mode .s1-config { background:#181c28; border-color:rgba(255,255,255,.08); }
+    body.dark-mode .s1-config-label { color:#9aa8c0; }
+    body.dark-mode .s1-config-inputs input,
+    body.dark-mode .s1-config select { background:#0f1318; border-color:rgba(255,255,255,.12); color:#ddd; }
+    body.dark-mode .s1-tbl th { background:#0f1318; color:#6b7fa8; }
+    body.dark-mode .s1-tbl td { border-bottom-color:rgba(255,255,255,.04); color:#ccc; }
+    body.dark-mode .bt20-stat-section { background:#181c28; border-color:rgba(255,255,255,.08); }
+    body.dark-mode .bt20-stat-hdr { background:rgba(255,255,255,.04); color:#6b7fa8; }
+    body.dark-mode .bt20-rank-tbl td { border-bottom-color:rgba(255,255,255,.04); color:#ccc; }
+    body.dark-mode .bt20-sub20-tbl th { background:#0f1318; color:#6b7fa8; }
+    body.dark-mode .bt20-sub20-tbl td { border-bottom-color:rgba(255,255,255,.04); color:#ccc; }
+    body.dark-mode .bt20-pattern-badge { background:#1a2240; color:#4dd0ff; border-color:rgba(0,207,255,.2); }
+    body.dark-mode .s1-hdr { border-bottom-color:rgba(255,255,255,.08); }
+    body.dark-mode .s1-config-row { border-bottom-color:rgba(255,255,255,.05); }
+    body.dark-mode .bt20-winner-badge.call { background:#3b1414; color:#ff8080; }
+    body.dark-mode .bt20-winner-badge.put  { background:#143020; color:#60e09a; }
+
+    /* ===== 模式切換按鈕 ===== */
+    .mode-btn {
+      border:none; padding:6px 12px; cursor:pointer;
+      font-size:13px; font-weight:600; background:#f0f0f0; color:#555;
+      transition: background .15s, color .15s;
+    }
+    .mode-btn:hover { background:#e0e8ff; color:#0052cc; }
+    .mode-btn.mode-active { background:#0052cc; color:#fff; }
+    body.dark-mode .mode-btn { background:#2a2a2a; color:#aaa; border-color:#444; }
+    body.dark-mode .mode-btn:hover { background:#1a2a40; color:#6bb8ff; }
+    body.dark-mode .mode-btn.mode-active { background:#1565c0; color:#fff; }
+    body.dark-mode #btnRefresh { background:#1a2a40; color:#6bb8ff; border-color:#2a3a60; }
+    body.dark-mode #viewModeSwitcher { border-color:#444; }
+
+    /* ===== 結算價面板 ===== */
+    #fspPanel {
+      display:none; margin:0 10px 10px;
+      background:#fff; border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,.08); overflow:hidden;
+    }
+    body.dark-mode #fspPanel { background:#111; box-shadow:0 2px 6px rgba(0,0,0,.35); }
+    #fspHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 14px; background:linear-gradient(135deg,#0b57d0,#4dabf7);
+      color:#fff; font-weight:700; font-size:14px;
+    }
+    #fspHeader .fsp-meta { font-size:11px; font-weight:400; opacity:.85; }
+    #fspFilterBar {
+      display:flex; flex-wrap:wrap; gap:6px; align-items:center;
+      padding:8px 12px; border-bottom:1px solid rgba(0,0,0,.07);
+      background:rgba(0,0,0,.02);
+    }
+    body.dark-mode #fspFilterBar { background:rgba(255,255,255,.04); border-bottom-color:rgba(255,255,255,.07); }
+    #fspFilterBar label { font-size:13px; color:#555; }
+    body.dark-mode #fspFilterBar label { color:#aaa; }
+    #fspFilterBar select, #fspFilterBar input[type=text] {
+      font-size:13px; padding:4px 8px; border-radius:6px;
+      border:1px solid #ccc; background:#fff; color:#333;
+    }
+    body.dark-mode #fspFilterBar select,
+    body.dark-mode #fspFilterBar input[type=text] { background:#1e1e1e; border-color:#444; color:#ddd; }
+    #fspTableWrap { max-height:340px; overflow:auto; }
+    #fspTable { width:100%; border-collapse:collapse; font-size:13px; }
+    #fspTable th {
+      position:sticky; top:0; z-index:1;
+      padding:8px 12px; text-align:center; font-size:12px; font-weight:700;
+      background:#f0f3fa; color:#555; border-bottom:2px solid #dde3f0;
+      white-space:nowrap;
+    }
+    body.dark-mode #fspTable th { background:#0f1318; color:#6b7fa8; border-bottom-color:#222; }
+    #fspTable td {
+      padding:8px 12px; text-align:center;
+      border-bottom:1px solid rgba(0,0,0,.05);
+      font-family:'Courier New',monospace; font-size:13px;
+    }
+    body.dark-mode #fspTable td { border-bottom-color:rgba(255,255,255,.04); color:#ccc; }
+    #fspTable tr:hover td { background:rgba(11,87,208,.06) !important; }
+    body.dark-mode #fspTable tr:hover td { background:rgba(77,171,247,.07) !important; }
+    #fspTable tr:nth-child(even) td { background:rgba(0,0,0,.02); }
+    body.dark-mode #fspTable tr:nth-child(even) td { background:rgba(255,255,255,.02); }
+    .fsp-monthly { background:#e8f4ff !important; font-weight:700; }
+    body.dark-mode .fsp-monthly { background:#0d2040 !important; }
+    .fsp-price { font-size:14px; font-weight:800; color:#0052cc; }
+    body.dark-mode .fsp-price { color:#6bb8ff; }
+    #fspStatus { padding:10px 14px; font-size:12px; color:#888; text-align:center; }
+    body.dark-mode #fspStatus { color:#666; }
+
+    /* ===== 合併模式進度條 ===== */
+    #mergeProgress {
+      display:none; align-items:center; gap:8px;
+      padding:6px 12px; background:#eef2ff;
+      border-radius:8px; font-size:12px; color:#0052cc;
+    }
+    body.dark-mode #mergeProgress { background:#1a2240; color:#6bb8ff; }
+    #mergeProgressBar {
+      width:160px; height:8px; border-radius:4px;
+      background:#d0d8f0; overflow:hidden;
+    }
+    #mergeProgressFill {
+      height:100%; border-radius:4px;
+      background:linear-gradient(90deg,#4dabf7,#0052cc);
+      transition: width .2s;
+    }
+
+    /* ===== 契約選單 ===== */
+    #contractSelect {
+      font-weight:700; min-width:150px; padding:4px 8px;
+      border-radius:8px; border:1px solid #ccc;
+      font-size:14px;
+    }
+    #contractSelect:not(:disabled) { border-color:#7b2fff; color:#7b2fff; }
+    body.dark-mode #contractSelect:not(:disabled) { border-color:#b88aff; color:#b88aff; }
+    #contractSelect option.opt-monthly { font-weight:900; }
+    #contractSelect option.opt-weekly  { color:#555; }
+    body.dark-mode #contractSelect option.opt-weekly { color:#aaa; }
+
+    /* ===== 暗黑模式：補正 inline 深色文字 ===== */
+
+    /* — FSP 手動貼上說明區 — */
+    body.dark-mode #fspPasteArea > div:first-child              { color:#ddd !important; }
+    body.dark-mode #fspPasteArea > div:nth-child(2)             { color:#bbb !important; }
+    body.dark-mode #fspPasteArea textarea                       { background:#1e1e1e !important; color:#ddd !important; border-color:#444 !important; }
+
+    /* — Greeks 卡片：label 欄 & 分隔線 — */
+    body.dark-mode #greeksStrikeLabel                           { color:#8899aa !important; }
+    body.dark-mode #greeksCard td[style*="color:#666"]          { color:#8899aa !important; }
+    body.dark-mode #greeksCard > div > div[style*="border-right"] { border-right-color:#333 !important; }
+    body.dark-mode #greeksCard > div > div[style*="border-top"]   { border-top-color:#333 !important; }
+
+    /* — 條件委託單：各處深色說明文字 — */
+    body.dark-mode .s1-hdr > div > div[style*="color:#888"]       { color:#8899aa !important; }
+    body.dark-mode .s1-config-inputs > span[style*="color:#999"]  { color:#778899 !important; }
+    body.dark-mode #s1TblWrap > div[style*="color:#666"]           { color:#bbb !important; }
+    body.dark-mode #s1FilledCount                                  { color:#8899aa !important; }
+    body.dark-mode #statPatternDetail                              { color:#8899aa !important; }
+
