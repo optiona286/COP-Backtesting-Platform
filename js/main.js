@@ -101,24 +101,34 @@ const tabTrend = document.getElementById('tabTrend');
 const paneTA = document.getElementById('chartTA');
 const paneTrend = document.getElementById('chartTrend');
 
+const paneInfo = document.getElementById('chartInfo');
+const tabInfo  = document.getElementById('tabInfo');
+
 function setChartTab(tab){
   activeChartTab = tab;
   tabTA.classList.toggle('active', tab==='ta');
   tabTrend.classList.toggle('active', tab==='trend');
+  tabInfo?.classList.toggle('active', tab==='info');
   paneTA.classList.toggle('active', tab==='ta');
   paneTrend.classList.toggle('active', tab==='trend');
+  if(paneInfo) paneInfo.classList.toggle('active', tab==='info');
   // TX 模式時 LWC 容器已由 renderTX 控制顯示
   if(tab !== 'ta' || currentChartMode !== 'tx') _lwcShowHide(false);
-  // LWC TA canvas 要明確顯示/隱藏，避免擋住走勢圖
-  if(_taChart){
-    _taContainer.style.visibility = (tab==='ta') ? '' : 'hidden';
-    _taContainer.style.pointerEvents = (tab==='ta') ? '' : 'none';
-  }
+  // LWC TA canvas 要明確顯示/隱藏，避免擋住走勢圖（不論 _taChart 是否存在都要設）
+  _taContainer.style.visibility = (tab==='ta') ? '' : 'hidden';
+  _taContainer.style.pointerEvents = (tab==='ta') ? '' : 'none';
   fixedTooltip.style.display = (tab==='ta' && fixedTooltip.innerHTML) ? 'block' : 'none';
+  // 切到走勢圖時強制 resize + 全面重繪
+  if(tab === 'trend'){
+    try{ chartTrend.resize(); }catch(_){}
+    trendChartInited = false; trendChartKey = '';
+  }
   renderChart(cutoffTime);
+  if(tab === 'info') updateInfoPanel(cutoffTime);
 }
 tabTA?.addEventListener('click', ()=>setChartTab('ta'));
 tabTrend?.addEventListener('click', ()=>setChartTab('trend'));
+document.getElementById('tabInfo')?.addEventListener('click', ()=>setChartTab('info'));
 
 window.addEventListener('resize', ()=>{
   try{ chartTrend.resize(); }catch(_){}
@@ -167,8 +177,7 @@ window.addEventListener('resize', ()=>{
         const key = `${expiry}_${strike}`; lastTypeSelectionMap[key] = typeSelect.value;
         currentChartMode = 'txo';
         _lwcShowHide(false); // 切回 TXO 時隱藏 LWC
-        setChartTab('ta');
-        renderChart(cutoffTime);
+        if(activeChartTab === 'ta') setChartTab('ta'); else renderChart(cutoffTime);
         highlightTSelected();
         updateAccountUI();
         return;
@@ -182,8 +191,7 @@ window.addEventListener('resize', ()=>{
         // ★ 強制重置 TX dirty flag，確保切換時一定重繪
         taChartInited = false;
         taChartKey = '';
-        setChartTab('ta');
-        renderChart(cutoffTime);
+        if(activeChartTab === 'ta') setChartTab('ta'); else renderChart(cutoffTime);
         highlightTSelected();
         return;
       }
@@ -1609,6 +1617,7 @@ usedCost.textContent = fmtNum(usedCostVal);
         r._atm   = (atmStrike != null && r.strike == atmStrike);
         r._n20c  = !!(near20C && r.strike == near20C.strike);
         r._n20p  = !!(near20P && r.strike == near20P.strike);
+        r._spread = (r.cPrice != null && r.pPrice != null && Math.abs(r.cPrice - r.pPrice) <= 10);
         // 漲跌 = 現價 - 上次價
         const prevC = prevTTablePrices.get(`${r.strike}|C`);
         const prevP = prevTTablePrices.get(`${r.strike}|P`);
@@ -1626,7 +1635,7 @@ usedCost.textContent = fmtNum(usedCostVal);
       }
 
       tBody.innerHTML=rows.map(r=>{
-        const rowCls = [r._atm?'n20-row-both':'', r._n20c&&r._n20p&&!r._atm?'n20-row-both':''].filter(Boolean).join(' ');
+        const rowCls = [r._atm?'n20-row-both':'', r._n20c&&r._n20p&&!r._atm?'n20-row-both':'', r._spread?'spread-alert':''].filter(Boolean).join(' ');
         const tags = [
           r._atm  ? '<span class="tag tag-atm">ATM</span>' : '',
           r._n20c ? '<span class="tag tag-n20c">C≈20</span>' : '',

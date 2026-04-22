@@ -3,9 +3,17 @@ function renderChart(cutoff=null){
   renderTA(cutoff);
   renderTX(cutoff);
   renderTrend(cutoff);
-  // 顯示/隱藏由 currentChartMode 決定
-  _lwcShowHide(currentChartMode === 'tx');
+  // 走勢圖 tab 時，TA / TX 都隱藏；否則依 currentChartMode 決定
+  if(activeChartTab === 'trend' || activeChartTab === 'info'){
+    const _tx = document.getElementById('chartTX');
+    const _ta = document.getElementById('chartTA');
+    if(_tx){ _tx.style.visibility='hidden'; _tx.style.pointerEvents='none'; }
+    if(_ta){ _ta.style.visibility='hidden'; _ta.style.pointerEvents='none'; }
+  } else {
+    _lwcShowHide(currentChartMode === 'tx');
+  }
   fixedTooltip.style.display = (activeChartTab==='ta' && fixedTooltip.innerHTML) ? 'block' : 'none';
+  if(typeof updateInfoPanel === 'function') updateInfoPanel(cutoff);
 }
 
 
