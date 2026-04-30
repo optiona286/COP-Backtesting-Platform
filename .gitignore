@@ -1,0 +1,15 @@
+# Local settings
+.claude/
+
+# Large or frequently refreshed market data
+data/**/*.zip
+*.rar
+
+# Logs and temporary output
+*.log
+*.tmp
+*.bak
+
+# OS metadata
+Thumbs.db
+Desktop.ini

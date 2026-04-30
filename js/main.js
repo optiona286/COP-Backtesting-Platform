@@ -83,8 +83,11 @@ const kinfo = document.getElementById('kinfo');
     const fixedTooltip = document.getElementById('fixedTooltip');
 
     // ====== Theme（最早掛上，確保即使後方有錯仍可切換）======
-    var isDark = false;
+    var isDark = document.body.classList.contains('dark-mode');
     if(themeBtn){
+      document.body.style.backgroundColor = isDark ? '#1e1e1e' : '#f5f7fa';
+      document.body.style.color = isDark ? '#eee' : '#000';
+      themeBtn.textContent = isDark ? '☀️ 淺色' : '🌙 深色';
       themeBtn.addEventListener('click', ()=>{
         isDark = !isDark;
         document.body.classList.toggle('dark-mode', isDark);
