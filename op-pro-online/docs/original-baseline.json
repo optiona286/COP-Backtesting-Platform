@@ -1,0 +1,142 @@
+[
+  {
+    "path": "index.html",
+    "sha256": "f3c98083fe0d4205ee6590973aa4106b39dd32ebc822f7b6188f7ad454e73927"
+  },
+  {
+    "path": "server.js",
+    "sha256": "e0ba34e105ddc390f6f9bc3da068588fa6fa011a1afd9757821f29b5711ffcee"
+  },
+  {
+    "path": "backend_adapted.py",
+    "sha256": "04e9734ba23349c60ca164189b379b437d6f4e8ead91fa91b5a25a97e46aef40"
+  },
+  {
+    "path": "fsp_data.csv",
+    "sha256": "353a385b4e4553d51a9997fd40f4223338e241fff7eb37548c9d9a6747415f7e"
+  },
+  {
+    "path": "css/style.css",
+    "sha256": "7504069b2563a742ced55c6f0dd194719633fc9d51f7df498106d5420cc70a94"
+  },
+  {
+    "path": "js/autoorder.js",
+    "sha256": "3447f6127405d59a845aa990fad8ebb8aa2534fb967acdd66f68b7955f3f66a8"
+  },
+  {
+    "path": "js/backend.js",
+    "sha256": "215d52cd1cc4ccc7964f0fa5277e33ffd58ebd69424432e0314edf3957a5ac0c"
+  },
+  {
+    "path": "js/backtest.js",
+    "sha256": "4e2595022bfa8977f73b41fd1a28a9fb599aca2b80aa13c6e608a35e9a070467"
+  },
+  {
+    "path": "js/chart.js",
+    "sha256": "66091d6d8888947e358d8c617925336094e0a79ea2ce96c2eccf87795cff616d"
+  },
+  {
+    "path": "js/compare-panel.js",
+    "sha256": "4b83bc336547abe5bebdae7ed708e54cc910d0a727669f7660ad7639982c71cf"
+  },
+  {
+    "path": "js/data.js",
+    "sha256": "ab557b7f0218b4f97583fa3a81af434cff9124d05aafcb2b4384ba705d76d279"
+  },
+  {
+    "path": "js/gauge.js",
+    "sha256": "147e0bffa6b2a26f73c00d6570251fdf70782a2ffe8d040f248934baedf7aa81"
+  },
+  {
+    "path": "js/hourly-extremes.js",
+    "sha256": "31014205a267fc6acbefc6082395cb55826e8323645a5bc7b36e480444907edf"
+  },
+  {
+    "path": "js/info.js",
+    "sha256": "b5bf8cdc60734a545f16dafacd29f313578362a032d2d0f4f2f333c4d568030b"
+  },
+  {
+    "path": "js/main.js",
+    "sha256": "e2b3ff7295274034267cc5584b288ceca4b946603829b7c9af6e582c8a14982b"
+  },
+  {
+    "path": "js/orders.js",
+    "sha256": "3860c87b0eac22398cf86e44aaadafec439aacb9688a8f070dbc53b8abdfaf6d"
+  },
+  {
+    "path": "js/protractor.js",
+    "sha256": "5c01155da6932e61520b49bf2a523529b56780871af2077ce788bc22fb8b6645"
+  },
+  {
+    "path": "js/selectors.js",
+    "sha256": "60a13de91e9d5639a2c1525beed5ed72161fefd2eb9765a2580dc21154ec97e5"
+  },
+  {
+    "path": "js/timeline.js",
+    "sha256": "a3a84d537a7b1abc75d451ba0cd105182180d7ff4dca5244469b73a595c6a5da"
+  },
+  {
+    "path": "js/utils.js",
+    "sha256": "9c156e538bd212664c63516293041f49b3cdca4be4670c5a3d16bcc2e64b7856"
+  },
+  {
+    "path": "favicon/Favicon.png",
+    "sha256": "425e80b7ebb0f97b73612c1627cfb3dadbd28ce17a9070cde044f08ed061167f"
+  },
+  {
+    "path": "favicon/OP_PRO.ico",
+    "sha256": "df9831233b834dfd4b9d60a5ceb7ab09b0f51917cb59e4577a881b28083615df"
+  },
+  {
+    "path": "sound/BuyOK.WAV",
+    "sha256": "01c0df314d0692efcec94bde1e8cbd2f6a4c93d2dede4b8ee7c65248bcf5362e"
+  },
+  {
+    "path": "sound/DeleteOrderFail.wav",
+    "sha256": "13506611885f184bf6687943b7743f8b2dcf7c8f1f664d6b7e89a2c441421409"
+  },
+  {
+    "path": "sound/DeleteOrderOK.WAV",
+    "sha256": "90c6e15909166e1dd42f8e2aab138084cecfc69119d201244bba855b4548ebeb"
+  },
+  {
+    "path": "sound/Event.wav",
+    "sha256": "bab56092b2e2931f6cf440ca5aedcacc86c86e33abca100e5bb4361d33939624"
+  },
+  {
+    "path": "sound/ModifyPriceFail.wav",
+    "sha256": "1f0fdb85ef4f8f84b023009c005f1e6f874e56052871d971167fbac906b21e17"
+  },
+  {
+    "path": "sound/ModifyPriceOK.WAV",
+    "sha256": "d78986fb2f8052af37bf977763475116276b665e4850f913fb23f4d56b628c81"
+  },
+  {
+    "path": "sound/ModifyVolFail.wav",
+    "sha256": "70531b0b6c4ced0994991ebaccd3d7f5bb6ef708b1c2fef2c14c3324069503fe"
+  },
+  {
+    "path": "sound/ModifyVolOK.WAV",
+    "sha256": "b33982d99478b4b8b4f4707f3766fe5830fc97b1a5ba977054e2c1776babca3f"
+  },
+  {
+    "path": "sound/OrderBuyFail.wav",
+    "sha256": "a64b8e58ed728ab329af7995cb7e78339d4c28e02b15f7388159cb0b4d246437"
+  },
+  {
+    "path": "sound/OrderBuyOK.WAV",
+    "sha256": "669e26aa633ac0bdd4aff63dbcb2d06beadb15ce2aca4fdd16b203358c721dfa"
+  },
+  {
+    "path": "sound/OrderSellFail.wav",
+    "sha256": "bd525fb172e21eb5cd7624519b93d5e60c184d22bb0ba0045daf79f1fc2b267d"
+  },
+  {
+    "path": "sound/OrderSellOK.WAV",
+    "sha256": "93bdc1b9f540be3b6c6523f1f53f0ce127774e41e732f6dbe1f89030ba75511c"
+  },
+  {
+    "path": "sound/SellOK.WAV",
+    "sha256": "cce1850de313bc421c362c3afd6899c00778ece480a3c8c9d33be025e8931474"
+  }
+]

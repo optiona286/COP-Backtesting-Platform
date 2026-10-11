@@ -1,0 +1,8 @@
+[
+  {
+    "AllowedOrigins": ["http://localhost:5100"],
+    "AllowedMethods": ["GET", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "MaxAgeSeconds": 3600
+  }
+]

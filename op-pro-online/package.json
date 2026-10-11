@@ -1,0 +1,8 @@
+{
+  "name": "op-pro-online",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Independent responsive OP PRO edition preserving original trading behavior",
+  "scripts": {"start":"node server.js","check":"node scripts/verify.cjs","check:original":"node scripts/verify.cjs --original"},
+  "engines": {"node":">=22"}
+}

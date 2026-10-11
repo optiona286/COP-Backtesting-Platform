@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>OP PRO Online｜選擇權交易研究工作台</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/workspace.css">
+  <link rel="stylesheet" href="css/mobile-app.css">
+  <link rel="stylesheet" href="css/app-visual.css">
+  <script src="js/config.js"></script>
+  <script src="js/compressed-data.js"></script>
+  <link rel="icon" type="image/jpeg" href="favicon/Favicon.png">
+</head>
+<body class="dark-mode app-mode">
+  <div id="opProLoading" class="op-pro-loading" role="status" aria-live="polite">
+    <div class="op-pro-loading-grid"></div>
+    <div class="op-pro-loading-card">
+      <div class="op-pro-loading-orbit">
+        <span class="op-pro-loading-ring ring-a"></span>
+        <span class="op-pro-loading-ring ring-b"></span>
+        <span class="op-pro-loading-ring ring-c"></span>
+        <img class="op-pro-loading-logo" src="favicon/Favicon.png" alt="OP PRO">
+      </div>
+      <div class="op-pro-loading-brand">OP PRO</div>
+      <div id="opProLoadingTitle" class="op-pro-loading-title">系統啟動中</div>
+      <div id="opProLoadingDetail" class="op-pro-loading-detail">正在準備交易介面</div>
+      <div class="op-pro-loading-progress"><span></span></div>
+    </div>
+  </div>
+
+<header class="ws-header"><div class="ws-brand"><img src="favicon/Favicon.png" alt=""><strong>OP PRO <small>ONLINE</small></strong></div><div class="terminal-header-tools"><span id="workspaceStatus" class="ws-status" role="status">連線中</span><button id="terminalSettings" type="button" aria-controls="workspaceControls" aria-expanded="false">設定 <span aria-hidden="true">⚙</span></button></div></header>
+  <details class="ws-controls" id="workspaceControls" open><summary><span>商品與圖表設定<small>選擇契約，開始你的研究</small></span></summary>
+  <div class="toolbar">
+    <label id="lblDate" for="dateSelect">結算日：</label>
+    <select id="dateSelect" disabled title="依後端契約資料載入單一結算日"><option value="">（載入後端結算日中…）</option></select>
+    <button id="btnFetchFSP" title="從 TAIFEX 抓取最新 TXO 指數選擇權最後結算價" style="padding:4px 10px;border-radius:8px;border:1px solid #4dabf7;cursor:pointer;font-size:13px;background:#e8f4ff;color:#0052cc;font-weight:600;">📡 抓取結算價</button>
+    <span id="loadStatus" style="font-size:12px;color:#888"></span>
+    <span style="color:#aaa;font-size:11px">│</span>
+    <!-- 契約選單（需先抓取結算價才能啟用） -->
+    <label>契約：</label>
+    <select id="contractSelect" title="依後端結算資料選擇契約">
+      <option value="">（載入後端契約中…）</option>
+    </select>
+    <span id="backendViewControls" style="display:none;align-items:center;gap:6px;">
+      <span style="color:#aaa;font-size:11px">│</span>
+      <label>契約檢視：</label>
+      <span id="backendViewModeSwitcher" class="backend-view-switch">
+        <button type="button" id="backendModeSettlement" class="backend-view-btn active">單一結算日</button>
+        <button type="button" id="backendModeMerge" class="backend-view-btn">合併區間</button>
+        <button type="button" id="backendModeSingle" class="backend-view-btn">獨立交易日</button>
+      </span>
+      <select id="backendTradeDateSelect" title="選擇契約內的獨立交易日" style="display:none;"></select>
+    </span>
+    <span style="color:#aaa;font-size:11px">│</span>
+    <label>顯示：</label>
+    <select id="daysViewSelect" title="從完整週期中只顯示最後 N 個交易日">
+      <option value="0" selected>全週期</option>
+      <option value="1">近1日</option>
+      <option value="2">近2日</option>
+      <option value="3">近3日</option>
+      <option value="4">近4日</option>
+      <option value="5">近5日</option>
+    </select>
+    <span style="color:#aaa;font-size:11px">│</span>
+    <label>到期月份：</label><select id="expirySelect"></select>
+    <div class="strike-group" style="display:flex;align-items:center;gap:4px">
+      <label>履約價：</label>
+      <button id="prevStrikeBtn">◀</button>
+      <select id="strikeSelect"></select>
+      <button id="nextStrikeBtn">▶</button>
+    </div>
+    <label>買賣權：</label><select id="typeSelect"></select>
+    <label>交易時段：</label>
+    <select id="sessionSelect">
+      <option value="全部">全部</option>
+      <option value="一般" selected>一般</option>
+      <option value="盤後">盤後</option>
+    </select>
+    <label>週期：</label>
+    <select id="periodSelect">
+      <option value="5">5分</option>
+      <option value="10">10分</option>
+      <option value="15" selected>15分</option>
+      <option value="30">30分</option>
+      <option value="60">60分</option>
+      <option value="D">日線</option>
+    </select>
+    <span id="settlementAxisControls" class="settlement-axis-controls" title="可切換結算日時段或美股正常交易夜盤；只影響 K 線與回測時間">
+      <button type="button" id="settlementAxisToggle" class="settlement-axis-toggle" aria-pressed="false">結算日時段：關</button>
+      <button type="button" id="usNightAxisToggle" class="settlement-axis-toggle us-night-axis-toggle" aria-pressed="false" title="美股正常盤：夏令 21:30～04:00；冬令 22:30～05:00">美股夜盤：關</button>
+      <select id="settlementAxisStart" aria-label="結算日開始時間">
+        <option value="084500">08:45</option>
+        <option value="100000">10:00</option>
+        <option value="110000">11:00</option>
+        <option value="120000">12:00</option>
+      </select>
+      <span>～</span>
+      <select id="settlementAxisEnd" aria-label="結算日結束時間">
+        <option value="100000">10:00</option>
+        <option value="110000">11:00</option>
+        <option value="120000">12:00</option>
+        <option value="133000">13:30</option>
+      </select>
+    </span>
+    
+    <span id="hourlyExtremeControls" hidden>
+      <label><input id="hourlyExtremeMarks" type="checkbox" checked>每小時高低點</label>
+      <label><input id="hourlyExtremePanelToggle" type="checkbox">區間紀錄</label>
+    </span>
+    <label>均線：</label>
+    <span id="maBox" class="maBox" title="勾選要顯示的均線（以收盤價計算）；左側色塊 = 該 MA 線條顏色">
+      <label class="maItem"><span class="maSwatch" data-ma="5"></span><input type="checkbox" class="maChk" value="5" checked>MA5</label>
+      <label class="maItem"><span class="maSwatch" data-ma="10"></span><input type="checkbox" class="maChk" value="10" checked>MA10</label>
+      <label class="maItem"><span class="maSwatch" data-ma="20"></span><input type="checkbox" class="maChk" value="20" checked>MA20</label>
+      <label class="maItem"><span class="maSwatch" data-ma="60"></span><input type="checkbox" class="maChk" value="60">MA60</label>
+    </span>
+    <button id="maCfgBtn" type="button" class="maBtn">自訂</button>
+    <span id="maCfgPanel" class="maCfgPanel" style="display:none">
+      <label class="maItem">週期：</label>
+      <input id="maCustomInput" type="text" value="5,10,20,60" title="用逗號或空白分隔，例如：5,10,20,60" />
+      <button id="maApplyBtn" type="button" class="maBtn">套用</button>
+      <button id="maResetBtn" type="button" class="maBtn">預設</button>
+    </span>
+    <label>圖表類型：</label>
+    <select id="chartTypeSelect">
+      <option value="candlestick" selected>K 線圖</option>
+      <option value="line">折線圖</option>
+    </select>
+    <button id="themeBtn">切換主題</button>
+  </div>
+
+  </details>
+
+  <section id="hourlyExtremePanel" class="hourly-extreme-panel" hidden aria-label="加權每小時高低點紀錄">
+    <header><strong>加權指數・每小時高低點</strong><button id="hourlyExtremeClose" type="button" aria-label="關閉區間紀錄">×</button></header>
+    <p>依目前 K 線週期計算；回測僅含已播放資料。時間為 K 棒起始時間，同價取最早一根；不足兩個不同價格顯示 —。</p>
+    <div class="hourly-extreme-table"><table><thead><tr><th>區間</th><th>最高（高1）</th><th>次高（高2）</th><th>最低（低1）</th><th>次低（低2）</th></tr></thead><tbody id="hourlyExtremeBody"></tbody></table></div>
+  </section>
+  <!-- 合併模式進度 -->
+  <div id="mergeProgress">
+    <span id="mergeProgressLabel">合併中...</span>
+    <div id="mergeProgressBar"><div id="mergeProgressFill" style="width:0%"></div></div>
+    <span id="mergeProgressPct">0%</span>
+  </div>
+
+  <!-- ===== 結算日結算價面板 ===== -->
+  <div id="fspPanel">
+    <div id="fspHeader">
+      <span>📊 TXO 指數選擇權－最後結算價
+        <span style="font-size:11px;font-weight:400;opacity:.8;margin-left:8px">資料來源：臺灣期貨交易所</span>
+      </span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="fsp-meta" id="fspUpdatedAt"></span>
+        <button id="btnFspRefresh" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;font-size:12px;">🔄 重新整理</button>
+        <button id="btnFspClose" style="padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;font-size:12px;">✕ 關閉</button>
+      </div>
+    </div>
+    <div id="fspFilterBar">
+      <label>商品：</label>
+      <select id="fspProdFilter">
+        <option value="all">全部</option>
+        <option value="TXO" selected>臺指選擇權 TXO</option>
+        <option value="TEO">電子選擇權 TEO</option>
+        <option value="TFO">金融選擇權 TFO</option>
+      </select>
+      <label style="margin-left:8px">類型：</label>
+      <select id="fspTypeFilter">
+        <option value="all">全部</option>
+        <option value="monthly">月契約</option>
+        <option value="weekly">週/其他</option>
+      </select>
+      <label style="margin-left:8px">搜尋：</label>
+      <input type="text" id="fspSearch" placeholder="契約月份 / 結算日 / 結算價" style="width:200px">
+      <span id="fspRowCount" style="margin-left:8px;font-size:12px;color:#888"></span>
+    </div>
+    <div id="fspTableWrap">
+      <table id="fspTable">
+        <thead><tr>
+          <th>#</th>
+          <th>最後結算日</th>
+          <th>契約月份</th>
+          <th>類型</th>
+          <th>TXO 結算價</th>
+          <th>TEO 結算價</th>
+          <th>TFO 結算價</th>
+        </tr></thead>
+        <tbody id="fspBody"></tbody>
+      </table>
+    </div>
+    <div id="fspStatus">請點「📡 抓取結算價」載入資料</div>
+
+    <!-- 貼上 HTML 備援區（proxy 失敗時顯示） -->
+    <div id="fspPasteArea" style="display:none;padding:12px 14px;border-top:1px solid rgba(0,0,0,.08);">
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:#333;">
+        📋 手動貼上法（100% 可用）
+      </div>
+      <div style="font-size:12px;color:#666;margin-bottom:8px;line-height:1.8;">
+        1. 點右方連結開啟 TAIFEX 頁面 →
+        <a id="fspTaifexLink" href="https://www.taifex.com.tw/cht/5/optIndxFSP" target="_blank"
+           style="color:#0052cc;font-weight:700;">臺灣期貨交易所 指數選擇權最後結算價</a><br>
+        2. 頁面載入完成後，按 <kbd style="background:#eee;padding:1px 5px;border-radius:3px;font-size:11px;">Ctrl+A</kbd>
+           全選，再 <kbd style="background:#eee;padding:1px 5px;border-radius:3px;font-size:11px;">Ctrl+C</kbd> 複製<br>
+        3. 點下方文字框，按 <kbd style="background:#eee;padding:1px 5px;border-radius:3px;font-size:11px;">Ctrl+V</kbd> 貼上，再點「解析」
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;">
+        <textarea id="fspPasteInput" rows="4"
+          placeholder="在此貼上 TAIFEX 頁面內容（Ctrl+A → Ctrl+C → 貼到這裡）..."
+          style="flex:1;padding:8px;border:1px solid #ccc;border-radius:6px;font-size:12px;
+                 font-family:monospace;resize:vertical;min-height:80px;"></textarea>
+        <button id="btnFspParse"
+          style="padding:8px 16px;border-radius:8px;border:none;cursor:pointer;
+                 background:#0052cc;color:#fff;font-weight:700;font-size:13px;white-space:nowrap;">
+          解析 →
+        </button>
+      </div>
+      <div id="fspPasteHint" style="font-size:11px;color:#aaa;margin-top:4px;"></div>
+    </div>
+  </div>
+
+  <!-- 回測控制列：K 線時間軸播放 -->
+  <div class="btbar" id="workspace-playback"><div class="ws-section-heading"><small>REPLAY</small>市場回測</div>
+    <div class="group">
+      <button id="btStart">開始回測</button>
+      <button id="btPause" disabled>暫停</button>
+      <button id="btResume" disabled>繼續</button>
+      <button id="btStop" disabled>停止</button>
+      <button id="btStepBack" disabled>-1</button>
+      <button id="btStep" disabled>+1</button>
+    </div>
+
+    <!-- 步進秒數 -->
+    <div class="group">
+      <label>步進(秒)</label>
+      <select id="btStepSec" title="每次更新前進的秒數">
+        <option>1</option>
+        <option>5</option>
+        <option>10</option>
+        <option selected>20</option>
+        <option>30</option>
+        <option>60</option>
+        <option>120</option>
+        <option>300</option>
+      </select>
+    </div>
+
+    <!-- 計算速度 -->
+    <div class="group">
+      <label>計算速度(倍/秒)</label>
+      <select id="btCalcSpeed">
+        <option value="1" selected>×1</option>
+        <option value="2">×2</option>
+        <option value="5">×5</option>
+        <option value="10">×10</option>
+        <option value="20">×20</option>
+        <option value="50">×50</option>
+        <option value="100">×100</option>
+        <option value="1000">×1000</option>
+        <option value="2000">×2000</option>
+        <option value="3000">×3000</option>
+        <option value="5000">×5000</option>
+        <option value="10000">×10000</option>
+      </select>
+    </div>
+
+    <div class="group" style="flex:1 1 auto">
+      <label>進度</label>
+      <input type="range" id="btProgress" min="0" max="0" step="1" value="0">
+      <span id="btInfo" class="pill">0 / 0</span>
+      <span id="btClock" class="pill">--:--:--</span>
+    </div>
+
+    <div class="group">
+      <label>手動時間</label>
+      <input type="time" id="btSetTime" step="1" value="09:00:00">
+      <button id="btJump">跳至</button>
+    </div>
+  </div>
+
+  <!-- 下單 + 委託 -->
+  <div class="orderbar" id="workspace-trade"><div class="ws-section-heading"><small>EXECUTION</small>下單與委託</div>
+    <div class="group">
+      <span class="tag">市價下單</span>
+      <label>口數</label>
+      <input type="number" id="qtyInput" min="1" step="1" value="1">
+      <label>契約乘數</label>
+      <input type="number" id="multInput" min="1" step="1" value="50" title="TXO 預設乘數 50 元/點">
+      <label>手續+稅/口</label>
+      <input type="number" id="feeInput" min="0" step="1" value="0">
+      <label><input type="checkbox" id="allowShort"> 允許放空</label>
+      <button class="btn btn-buy" id="btnBuy">買進（市價）</button>
+      <button class="btn btn-sell" id="btnSell">賣出（市價）</button>
+    </div>
+
+    <div class="group">
+      <span class="tag">委託（限價）</span>
+      <label>買/賣</label>
+      <select id="ltSide"><option value="BUY">買</option><option value="SELL">賣</option></select>
+      <label>權利點</label>
+      <input type="number" id="ltPrice" min="0" step="0.1" value="20">
+      <label>口數</label>
+      <input type="number" id="ltQty" min="1" step="1" value="1">
+      <button class="btn" id="btnPlaceLimit">送出委託</button>
+      <span class="tag">未成交：<b id="ltWorkingCnt">0</b></span>
+    </div>
+
+    <div class="stat">
+      <span>商品：<b id="symNow">-</b></span>
+      <span>最新價：<b id="lastPx">-</b></span>
+      <span>未實現：<b id="uPnL">0</b></span>
+      <span>已實現：<b id="rPnL">0</b></span>
+      <span>權益：<b id="equity">0</b></span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="tpanel" id="workspace-quotes"><div class="ws-section-heading ws-panel-heading"><strong>市場與選擇權報價</strong><span>CALL / PUT</span></div>
+
+      <!-- ===== TX 期貨 / 加權 報價列 ===== -->
+      <div id="txBar">
+        <span class="market-switch" id="marketSwitch" style="display:inline-flex;border:1px solid rgba(96,165,250,.4);border-radius:8px;overflow:hidden;font-size:12px;font-weight:700;margin-right:8px;">
+          <button type="button" class="market-btn" data-market="tx" style="padding:3px 10px;border:0;background:transparent;color:#aaa;cursor:pointer;">台指</button>
+          <button type="button" class="market-btn active" data-market="taiex" style="padding:3px 10px;border:0;background:rgba(96,165,250,.18);color:#60a5fa;cursor:pointer;border-left:1px solid rgba(96,165,250,.4);">加權</button>
+        </span>
+        <span class="tx-label" id="marketLabel">加權指數</span>
+        <span class="tx-price" id="txPrice">—</span>
+        <span class="tx-chg flat" id="txChg">—</span>
+        <span class="tx-open">開：<span id="txOpen">—</span></span>
+        <span class="tx-hi">高：<span id="txHigh">—</span></span>
+        <span class="tx-lo">低：<span id="txLow">—</span></span>
+        <span class="tx-vol">量：<span id="txVol">—</span></span>
+        <span class="tx-upload-hint" id="txHint">（請上傳含 TX 台指期的資料）</span>
+        <button id="showVolatilityBtn" title="開啟多空儀錶浮動視窗" style="
+          margin-left:auto; padding:3px 10px; border-radius:8px; border:1px solid rgba(96,165,250,.4);
+          background:rgba(96,165,250,.1); color:#60a5fa; font-size:12px; cursor:pointer; font-weight:600;
+        ">📊 多空</button>
+        <button id="showProtractorBtn" title="用台指／加權走勢斜率計算角度（不含選擇權）" class="protractor-open-btn">📐 量角器</button>
+      </div>
+
+      <div class="tbox">
+        <div class="thead t-quote-head">
+          <table>
+            <colgroup>
+              <col class="q-vol">
+              <col class="q-chg">
+              <col class="q-price">
+              <col class="q-strike">
+              <col class="q-price">
+              <col class="q-chg">
+              <col class="q-vol">
+            </colgroup>
+            <thead>
+              <tr class="t-quote-group">
+                <th colspan="3" class="t-quote-call">CALL</th>
+                <th class="t-quote-expiry" id="tQuoteExpiryHeader">到期日</th>
+                <th colspan="3" class="t-quote-put">PUT</th>
+              </tr>
+              <tr class="t-quote-cols">
+                <th>量</th>
+                <th>漲跌</th>
+                <th>價</th>
+                <th class="center">履約價</th>
+                <th>價</th>
+                <th>漲跌</th>
+                <th>量</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="tbody" style="max-height:600px; overflow:auto">
+          <table>
+            <colgroup>
+              <col class="q-vol">
+              <col class="q-chg">
+              <col class="q-price">
+              <col class="q-strike">
+              <col class="q-price">
+              <col class="q-chg">
+              <col class="q-vol">
+            </colgroup>
+            <tbody id="tBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="rpanel"><div class="ws-section-heading ws-panel-heading"><strong>市場研究</strong><span>技術分析 · 回放 · 對比</span></div>
+      <div id="kinfo">請選擇檔案與條件</div>
+      <div class="chartCard">
+  <div class="chartTabs">
+    <span id="chartBtClock" style="font-family:monospace;font-size:13px;font-weight:700;color:#60a5fa;margin-right:auto;padding:0 8px;display:none"></span>
+    <span id="txTooltip" style="display:none;font-size:12px;color:#ddd;padding:2px 10px;background:rgba(0,0,0,.5);border-radius:6px;"></span>
+    <button class="tabBtn active" id="tabTA" data-tab="ta">技術分析</button>
+    <button class="tabBtn compare-panel-open-btn" id="btnOpenComparePanel" type="button" title="開啟台指／加權與台指選的上下 K 線對比面板">⇅ 上下對比</button>
+    <button class="tabBtn" id="tabTrend" data-tab="trend">走勢圖</button>
+    <button class="tabBtn" id="tabCompare" data-tab="compare">比較圖</button>
+    <button class="tabBtn" id="tabTimeline" data-tab="timeline">時間軸</button>
+  </div>
+
+  <!-- 走勢斜率量角器：只使用台指／加權，獨立於選擇權與多空儀錶 -->
+  <div id="protractorFloat" class="protractor-float" aria-hidden="true">
+    <div id="protractorHeader" class="protractor-header">
+      <div class="protractor-heading">
+        <span>📐</span>
+        <div>
+          <strong>走勢斜率量角器</strong>
+          <small id="protractorSource">等待走勢資料</small>
+        </div>
+      </div>
+      <div class="protractor-actions">
+        <select id="protractorWindow" title="計算斜率的回看區間">
+          <option value="5">近 5 分</option>
+          <option value="15" selected>近 15 分</option>
+          <option value="30">近 30 分</option>
+          <option value="60">近 60 分</option>
+          <option value="all">全區間</option>
+        </select>
+        <button type="button" id="protractorMinBtn" title="最小化">−</button>
+        <button type="button" id="protractorCloseBtn" title="關閉">✕</button>
+      </div>
+    </div>
+    <div id="protractorBody" class="protractor-body">
+      <div id="protractorChart" class="protractor-chart"></div>
+      <div class="protractor-summary">
+        <div><span>角度</span><strong id="protractorAngle">—</strong></div>
+        <div><span>方向</span><strong id="protractorDirection">—</strong></div>
+        <div><span>斜率</span><strong id="protractorSlope">—</strong></div>
+      </div>
+      <div id="protractorRange" class="protractor-range">尚未取得走勢資料</div>
+    </div>
+  </div>
+  <div class="chartWrap">
+    <!-- TXO K線（ECharts） -->
+    <div id="chartTA" class="chartPane active"></div>
+    <!-- TX K線（Lightweight Charts） -->
+    <div id="chartTX" class="chartPane" style="position:absolute;inset:0;visibility:hidden;pointer-events:none;"></div>
+    <!-- 走勢圖（ECharts） -->
+    <div id="chartTrend" class="chartPane"></div>
+    <!-- 比較圖：TX vs 加權 -->
+    <div id="chartCompare" class="chartPane" style="overflow-y:auto;background:#0b0d12;color:#eee;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <!-- TX 卡 -->
+        <div style="background:#141826;border:1px solid rgba(96,165,250,.25);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:12px;font-weight:700;color:#60a5fa;margin-bottom:8px;letter-spacing:1px;">TX 台指期</div>
+          <table style="width:100%;font-size:12px;border-collapse:collapse;">
+            <tr><td style="color:#94a3b8;padding:3px 0;">開</td><td id="cmpTxOpen"  style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">高</td><td id="cmpTxHigh"  style="text-align:right;font-weight:700;font-family:monospace;color:#ef5350;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">低</td><td id="cmpTxLow"   style="text-align:right;font-weight:700;font-family:monospace;color:#26a69a;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">收</td><td id="cmpTxClose" style="text-align:right;font-weight:800;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">漲跌</td><td id="cmpTxChg" style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">幅度</td><td id="cmpTxPct" style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+          </table>
+        </div>
+        <!-- 加權卡 -->
+        <div style="background:#141826;border:1px solid rgba(250,204,21,.3);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:12px;font-weight:700;color:#facc15;margin-bottom:8px;letter-spacing:1px;">加權指數 TAIEX</div>
+          <table style="width:100%;font-size:12px;border-collapse:collapse;">
+            <tr><td style="color:#94a3b8;padding:3px 0;">開</td><td id="cmpTxiOpen"  style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">高</td><td id="cmpTxiHigh"  style="text-align:right;font-weight:700;font-family:monospace;color:#ef5350;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">低</td><td id="cmpTxiLow"   style="text-align:right;font-weight:700;font-family:monospace;color:#26a69a;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">收</td><td id="cmpTxiClose" style="text-align:right;font-weight:800;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">漲跌</td><td id="cmpTxiChg" style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">幅度</td><td id="cmpTxiPct" style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+          </table>
+        </div>
+        <!-- 價差卡 -->
+        <div style="background:#141826;border:1px solid rgba(244,114,182,.3);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:12px;font-weight:700;color:#f472b6;margin-bottom:8px;letter-spacing:1px;">基差（TX − 加權）</div>
+          <table style="width:100%;font-size:12px;border-collapse:collapse;">
+            <tr><td style="color:#94a3b8;padding:3px 0;">開</td><td id="cmpDiffOpen"  style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">收</td><td id="cmpDiffClose" style="text-align:right;font-weight:800;font-family:monospace;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">最大</td><td id="cmpDiffMax"  style="text-align:right;font-weight:700;font-family:monospace;color:#ef5350;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">最小</td><td id="cmpDiffMin"  style="text-align:right;font-weight:700;font-family:monospace;color:#26a69a;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">幅度比</td><td id="cmpDiffRatio" style="text-align:right;font-weight:700;font-family:monospace;color:#a78bfa;">—</td></tr>
+            <tr><td style="color:#94a3b8;padding:3px 0;">|基差|/加權</td><td id="cmpDiffPct"  style="text-align:right;font-weight:700;font-family:monospace;">—</td></tr>
+          </table>
+        </div>
+      </div>
+      <div id="chartCompareLine" style="flex:1;min-height:280px;background:#0b0d12;border:1px solid rgba(255,255,255,.06);border-radius:10px;"></div>
+      <div style="font-size:11px;color:#64748b;text-align:right;">資料來源：TX → TAIFEX 期貨；加權 → FinMind 5 秒</div>
+    </div>
+    <!-- 資訊圖 -->
+    <div id="chartTimeline" class="chartPane timelinePane">
+      <div class="tl-shell">
+        <header class="tl-header">
+          <div class="tl-heading">
+            <div class="tl-eyebrow">SESSION EVENT STREAM</div>
+            <div class="tl-title">盤中事件時間軸</div>
+          </div>
+          <div class="tl-context">
+            <span id="tlDate" class="tl-chip primary">交易日 —</span>
+            <span id="tlSession" class="tl-chip">一般盤</span>
+            <span id="tlContract" class="tl-chip">契約 —</span>
+          </div>
+        </header>
+
+        <section class="tl-summary">
+          <div class="tl-summary-card market"><span>市場</span><strong id="tlMarketLast">—</strong><em id="tlMarketMeta">尚未載入</em></div>
+          <div class="tl-summary-card call"><span>CALL</span><strong id="tlCallLast">—</strong><em id="tlCallMeta">尚未載入</em></div>
+          <div class="tl-summary-card put"><span>PUT</span><strong id="tlPutLast">—</strong><em id="tlPutMeta">尚未載入</em></div>
+          <div class="tl-summary-card clock"><span>目前時間</span><strong id="tlClock">—</strong><em id="tlClockMeta">完整資料</em></div>
+        </section>
+
+        <section class="tl-board">
+          <div id="tlCursor" class="tl-cursor"><span id="tlCursorLabel">—</span></div>
+          <div class="tl-scale-row">
+            <div></div>
+            <div id="tlScale" class="tl-scale-track"></div>
+          </div>
+          <div id="tlRows" class="tl-rows">
+            <div class="tl-empty">請先載入交易資料</div>
+          </div>
+        </section>
+
+        <footer class="tl-footer">
+          <div class="tl-legend"><span class="market">● 市場</span><span class="call">● CALL</span><span class="put">● PUT</span></div>
+          <div id="tlStatus">時間軸會跟隨交易日、商品與回測進度更新</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="account" id="workspace-account">
+        <div class="card">
+          <h4>帳戶摘要</h4>
+          <div>初始現金：<b id="cash0">1,000,000</b></div>
+          <div>可用現金：<b id="cash">1,000,000</b></div>
+          <div>已使用成本：<b id="usedCost">0</b></div>
+          <div>已實現損益：<b id="rPnL2">0</b></div>
+          <div>未實現損益：<b id="uPnL2">0</b></div>
+          <div>權益（E）：<b id="equity2">1,000,000</b></div>
+        </div>
+
+        <div class="card positions">
+          <h4>部位（多空合併，平倉優先）</h4>
+          <table id="posTable">
+            <thead>
+              <tr>
+                <th class="center">商品</th>
+                <th>口數</th>
+                <th>均價</th>
+                <th>現價</th>
+                <th>P/L</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="card orders">
+          <h4>成交紀錄</h4>
+          <table id="ordTable">
+            <thead>
+              <tr>
+                <th class="center">時間</th>
+                <th class="center">商品</th>
+                <th>買/賣</th>
+                <th>口數</th>
+                <th>價格</th>
+                <th>手續稅</th>
+                <th>實現P/L</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- 委託清單 -->
+        <div class="card limits">
+          <h4>委託清單（限價單）</h4>
+          <table id="ltTable">
+            <thead>
+              <tr>
+                <th class="center">時間</th>
+                <th class="center">商品</th>
+                <th>買/賣</th>
+                <th>權利點</th>
+                <th>口數</th>
+                <th>狀態</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h4>風控</h4>
+          <div>
+            <label>單筆最大口數</label>
+            <input type="number" id="riskMaxQty" value="50" min="1" step="1" />
+          </div>
+          <div>
+            <label>單日停損（權益）</label>
+            <input type="number" id="riskEquityStop" value="-999999" />
+            <span class="tag"><= 觸發停用下單</span>
+          </div>
+        </div>
+
+        <!-- ★ 條件委託單：自動下單功能 -->
+        <div class="card bt20-card s1-page" id="bt20Card">
+          <!-- 標題列 -->
+          <div class="s1-hdr">
+            <div>
+              <div class="s1-hdr-title">
+                <span class="s1-badge" style="background:linear-gradient(135deg,#ff6b35,#f7c948);color:#fff;">AUTO</span>
+                條件委託單
+              </div>
+              <div style="font-size:12px;color:#888;margin-top:4px">回測播放時，自動掃描所有 CALL / PUT，符合進場區間即自動下單（買進），支援停利停損自動出場</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <button class="s1-run-btn" id="bt20Run" style="background:linear-gradient(135deg,#0b57d0,#4dabf7);">▶ 啟動自動下單</button>
+              <button class="s1-run-btn" id="bt20Stop" style="background:linear-gradient(135deg,#d32f2f,#ff6b6b);display:none;">■ 停止</button>
+            </div>
+          </div>
+
+          <!-- 設定區 -->
+          <div class="s1-config" id="s1Config">
+            <div class="s1-config-row">
+              <span class="s1-config-label">📌 進場條件：權利金區間（元）</span>
+              <div class="s1-config-inputs">
+                <input type="number" id="s1EntryMin" value="20" min="0" step="0.5" style="width:64px"> ～
+                <input type="number" id="s1EntryMax" value="25" min="0" step="0.5" style="width:64px">
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">📌 掃描方向</span>
+              <div class="s1-config-inputs">
+                <select id="s1ScanSide" style="width:130px">
+                  <option value="both">CALL + PUT（雙邊）</option>
+                  <option value="call">僅 CALL</option>
+                  <option value="put">僅 PUT</option>
+                </select>
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">📌 每檔口數</span>
+              <div class="s1-config-inputs">
+                <input type="number" id="s1Qty" value="1" min="1" step="1" style="width:64px">
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">📌 乘數</span>
+              <div class="s1-config-inputs">
+                <input type="number" id="s1Mult" value="50" min="1" step="1" style="width:64px">
+              </div>
+            </div>
+            <div class="s1-config-row" style="border-top:2px solid rgba(0,82,204,.15);padding-top:12px;margin-top:4px;">
+              <span class="s1-config-label" style="color:#d32f2f;font-weight:700;">🎯 停利（點）</span>
+              <div class="s1-config-inputs">
+                <input type="number" id="s1TP" value="10" min="0" step="1" style="width:64px">
+                <span style="font-size:11px;color:#999">進場價 + 此值 = 停利價</span>
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label" style="color:#1b5e20;font-weight:700;">🛡️ 停損（點）</span>
+              <div class="s1-config-inputs">
+                <input type="number" id="s1SL" value="5" min="0" step="1" style="width:64px">
+                <span style="font-size:11px;color:#999">進場價 - 此值 = 停損價</span>
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">出場模式</span>
+              <select id="s1ExitMode" style="width:180px">
+                <option value="tpsl">停利 / 停損 自動出場</option>
+                <option value="close">收盤價出場（不停利停損）</option>
+                <option value="peak">最高價出場（回測用）</option>
+              </select>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">⏰ 掃描時段限制</span>
+              <div class="s1-config-inputs">
+                <input type="time" id="s1TimeStart" value="08:45:00" step="1" style="width:110px"> ～
+                <input type="time" id="s1TimeEnd" value="13:44:00" step="1" style="width:110px">
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">最大同時持倉數</span>
+              <div class="s1-config-inputs">
+                <input type="number" id="s1MaxPos" value="10" min="1" step="1" style="width:64px">
+                <span style="font-size:11px;color:#999">超過此數停止新開倉</span>
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">每檔僅進場一次</span>
+              <div class="s1-config-inputs">
+                <label style="cursor:pointer"><input type="checkbox" id="s1OncePerStrike" checked> 是</label>
+              </div>
+            </div>
+            <div class="s1-config-row">
+              <span class="s1-config-label">策略狀態</span>
+              <span class="s1-status stopped" id="s1Status">未啟動</span>
+            </div>
+          </div>
+
+          <!-- 結果摘要卡片 -->
+          <div class="s1-cards" id="s1Cards" style="display:none">
+            <div class="s1-card">
+              <div class="s1-card-lbl">CALL 開倉數</div>
+              <div class="s1-card-val side-call" id="s1CallCount">—</div>
+            </div>
+            <div class="s1-card">
+              <div class="s1-card-lbl">PUT 開倉數</div>
+              <div class="s1-card-val side-put" id="s1PutCount">—</div>
+            </div>
+            <div class="s1-card">
+              <div class="s1-card-lbl">CALL 損益合計</div>
+              <div class="s1-card-val" id="s1CallPnl">—</div>
+            </div>
+            <div class="s1-card">
+              <div class="s1-card-lbl">PUT 損益合計</div>
+              <div class="s1-card-val" id="s1PutPnl">—</div>
+            </div>
+            <div class="s1-card s1-card-total">
+              <div class="s1-card-lbl">合計損益</div>
+              <div class="s1-card-val" id="s1TotalPnl">—</div>
+            </div>
+          </div>
+
+          <!-- 委託明細表 -->
+          <div class="s1-tbl-wrap" id="s1TblWrap" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 2px;font-size:13px;font-weight:700;color:#666;letter-spacing:1px;text-transform:uppercase;">
+              <span>自動委託明細</span>
+              <span style="font-size:12px;color:#888;font-weight:400" id="s1FilledCount">已成交 0</span>
+            </div>
+            <div style="overflow-x:auto;max-height:400px;overflow-y:auto">
+              <table class="s1-tbl">
+                <thead><tr>
+                  <th>狀態</th><th>方向</th><th>履約價</th>
+                  <th>進場時間</th><th>進場價</th><th>停利/停損</th><th>現價 / 出場</th>
+                  <th>損益</th><th>出場原因</th>
+                </tr></thead>
+                <tbody id="s1Body">
+                  <tr><td colspan="9" style="text-align:center;color:#aaa;padding:14px">請設定條件後按「啟動自動下單」，再開始回測播放</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 統計分析：最大贏家 -->
+          <div class="bt20-stat-section" id="statWinner" style="display:none">
+            <div class="bt20-stat-hdr">🏆 最大贏家</div>
+            <div class="bt20-winner-row" id="statWinnerRow">—</div>
+            <table class="bt20-rank-tbl" id="statRankTbl"></table>
+          </div>
+
+          <!-- 統計分析：盤型分析 -->
+          <div class="bt20-stat-section" id="statPattern" style="display:none">
+            <div class="bt20-stat-hdr">📊 盤型分析</div>
+            <div id="statPatternBadge"></div>
+            <div id="statPatternDetail" style="padding:5px 12px 10px;font-size:12px;color:#888;line-height:1.8;font-family:'Courier New',monospace"></div>
+          </div>
+
+          <!-- 統計分析：曾跌破區間下限 -->
+          <div class="bt20-stat-section" id="statSub20" style="display:none">
+            <div class="bt20-stat-hdr">📉 曾觸及停損</div>
+            <div style="overflow-x:auto">
+              <table class="bt20-sub20-tbl">
+                <thead><tr>
+                  <th>方向</th><th>履約價</th><th>觸及價</th><th>觸及時間</th>
+                </tr></thead>
+                <tbody id="statSub20Body"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="fixedTooltip">📊 提示框載入中...</div>
+
+  <!-- 上下 K 線對比浮動面板：獨立於原技術分析圖，不改變主版面尺寸 -->
+  <section id="compareKPanel" class="compare-k-panel" aria-hidden="true">
+    <header id="compareKPanelHeader" class="compare-k-panel-header">
+      <div class="compare-k-panel-heading">
+        <strong>上下 K 線對比</strong>
+        <span id="compareKPanelStatus">共用目前商品、週期與回測時間</span>
+      </div>
+      <div class="compare-k-panel-market" aria-label="上圖市場切換">
+        <button type="button" class="compare-market-btn" data-compare-market="tx">台指</button>
+        <button type="button" class="compare-market-btn active" data-compare-market="taiex">加權</button>
+      </div>
+      <div class="compare-k-panel-actions">
+        <button type="button" id="compareKMaxBtn" title="最大化">□</button>
+        <button type="button" id="compareKCloseBtn" class="danger" title="關閉">×</button>
+      </div>
+    </header>
+    <div id="compareKPanelBody" class="compare-k-panel-body">
+      <article class="compare-k-pane">
+        <div class="compare-k-pane-head">
+          <strong id="compareKTopTitle">加權指數</strong>
+          <span id="compareKTopInfo">尚未載入資料</span>
+        </div>
+        <div id="compareKTopChart" class="compare-k-chart"><div class="compare-k-sync-line"></div></div>
+      </article>
+      <div id="compareKDivider" class="compare-k-divider" title="拖曳調整上下圖高度"></div>
+      <article class="compare-k-pane">
+        <div class="compare-k-pane-head">
+          <strong id="compareKBottomTitle">台指選擇權</strong>
+          <span id="compareKBottomInfo">尚未載入資料</span>
+        </div>
+        <div id="compareKBottomChart" class="compare-k-chart"><div class="compare-k-sync-line"></div></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ★ 浮動多空儀錶視窗 -->
+  <div id="volatilityFloat" style="
+    position:fixed; bottom:24px; right:24px; z-index:2000;
+    width:480px;
+    background:linear-gradient(160deg,#0d1117 0%,#0f1923 60%,#0d1117 100%);
+    border-radius:16px;
+    box-shadow:0 8px 40px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08), inset 0 1px 0 rgba(255,255,255,.06);
+    font-size:12px; color:#eee; user-select:none; display:none;
+  ">
+    <!-- 標題列 -->
+    <div id="volatilityHeader" style="
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; cursor:grab;
+      border-bottom:1px solid rgba(255,255,255,.07);
+      border-radius:16px 16px 0 0;
+      background:linear-gradient(90deg,rgba(96,165,250,.08),rgba(255,255,255,.03));
+    ">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;">📊</span>
+        <div>
+          <div style="font-weight:800;font-size:13px;color:#e2e8f0;letter-spacing:.5px;">多空儀錶</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px;">TX 台指期・當日累積</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="volatilityValue" style="
+          font-family:'Courier New',monospace; font-size:18px; font-weight:900;
+          letter-spacing:1px; color:#fbbf24;
+          text-shadow:0 0 12px rgba(251,191,36,.4);
+        ">—</span>
+        <div style="display:flex;gap:6px;">
+          <button id="volatilityMinBtn" style="
+            background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1);
+            color:#94a3b8; cursor:pointer; border-radius:8px;
+            padding:3px 10px; font-size:13px; line-height:1.4;
+          ">−</button>
+          <button id="volatilityCloseBtn" style="
+            background:rgba(220,50,50,.2); border:1px solid rgba(220,50,50,.3);
+            color:#fca5a5; cursor:pointer; border-radius:8px;
+            padding:3px 10px; font-size:13px; line-height:1.4;
+          ">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主體 -->
+    <div id="volatilityBody">
+      <!-- 儀錶圖 -->
+      <div style="padding:16px 16px 0;">
+        <div id="volatilityChart" style="width:100%; height:260px;"></div>
+      </div>
+
+      <!-- 數據列：今日高 / 趴數 / 今日低 -->
+      <div style="
+        display:grid; grid-template-columns:1fr 1fr 1fr;
+        gap:1px; background:rgba(255,255,255,.06);
+        border-top:1px solid rgba(255,255,255,.07);
+        overflow:hidden; margin-top:4px;
+      ">
+        <div style="background:#0d1117;padding:12px 16px;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;letter-spacing:.5px;">今日最高</div>
+          <div id="gaugeHigh" style="font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:#f87171;">—</div>
+        </div>
+        <div style="background:#0d1117;padding:12px 16px;text-align:center;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;letter-spacing:.5px;">趴數</div>
+          <div id="gaugePct" style="font-family:'Courier New',monospace;font-size:15px;font-weight:700;">—</div>
+        </div>
+        <div style="background:#0d1117;padding:12px 16px;text-align:right;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;letter-spacing:.5px;">今日最低</div>
+          <div id="gaugeLow" style="font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:#4ade80;">—</div>
+        </div>
+      </div>
+
+      <!-- 時間列 -->
+      <div style="padding:8px 16px 12px;display:flex;justify-content:space-between;align-items:center;">
+        <div id="gaugeChg" style="font-family:'Courier New',monospace;font-weight:700;font-size:11px;">—</div>
+        <div style="font-size:10px;color:#475569;">🕒 <span id="gaugeTime">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 開啟浮動視窗的按鈕（放在 txBar 附近） -->
+
+  <footer class="ws-footer">OP PRO Online · 選擇權交易研究</footer>
+
+  <!-- 外部函式庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.1.0/dist/lightweight-charts.standalone.production.js"></script>
+
+  <!-- 應用程式模組 -->
+  <script src="js/utils.js"></script>
+  <script src="js/hourly-extremes.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/gauge.js"></script>
+  <script src="js/protractor.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/compare-panel.js"></script>
+  <script src="js/timeline.js"></script>
+  <script src="js/workspace.js"></script>
+  <script src="js/app-settings.js"></script>
+  <script src="js/mobile-app.js"></script>
+  <script src="js/chart-info.js"></script>
+</body>
+</html>

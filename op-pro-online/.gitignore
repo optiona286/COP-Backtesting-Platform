@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+data/
+.publish/
+*.log
+*.tmp
+*.dmp
+Thumbs.db
+Desktop.ini
+.qa/
+scripts/.state/
