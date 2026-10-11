@@ -93,11 +93,11 @@
   }
   function selectSection(key){const previous=document.body.dataset.terminalView;document.body.dataset.terminalView=key;for(const b of mobileNav.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b.dataset.view===key));if(mobileLayout.matches)controls.open=true;resizeCharts();document.dispatchEvent(new CustomEvent('oppro:section',{detail:{key,previous}}));}
   const icons={charts:'M3 3v18h18M7 15l4-5 4 3 5-8',quotes:'M4 5h16M4 12h16M4 19h16',trade:'M4 7h16m-5-4 5 4-5 4M20 17H4m5-4-5 4 5 4',account:'M3 5h18v15H3zM3 9h18m-6 5h3',settings:'M4 6h16M4 12h16M4 18h16M8 3v6M16 9v6M10 15v6'};
-  for(const[key,label]of [['charts','圖表'],['quotes','報價'],['trade','交易'],['account','帳戶'],['settings','設定']]){
+  for(const[key,label]of [['quotes','報價'],['charts','圖表'],['trade','交易'],['account','帳戶'],['settings','設定']]){
     const b=make('button','',`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${icons[key]}"/></svg><span>${label}</span>`);b.type='button';b.dataset.view=key;
     b.addEventListener('click',()=>{selectSection(key);window.scrollTo({top:0,behavior:'instant'});});mobileNav.append(b);
   }
-  document.body.append(mobileNav);syncSettingsLayout();selectSection('charts');
+  document.body.append(mobileNav);syncSettingsLayout();selectSection('quotes');
   const settings=$('#terminalSettings');settings.addEventListener('click',()=>{if(mobileLayout.matches){selectSection('settings');return;}controls.open=!controls.open;desktopSettingsOpen=controls.open;settings.setAttribute('aria-expanded',String(controls.open));if(controls.open)controls.scrollIntoView({block:'nearest'});});
   controls.addEventListener('toggle',()=>{if(!mobileLayout.matches)desktopSettingsOpen=controls.open;settings.setAttribute('aria-expanded',String(controls.open));resizeCharts();});
   mobileLayout.addEventListener('change',syncSettingsLayout);

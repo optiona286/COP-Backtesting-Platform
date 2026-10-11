@@ -4,14 +4,14 @@
   const $ = s => document.querySelector(s);
   const make = (tag, cls, html='') => {const n=document.createElement(tag);n.className=cls;n.innerHTML=html;return n;};
   const reduced=matchMedia('(prefers-reduced-motion:reduce)');
-  const sections=['charts','quotes','trade','account','settings'];
+  const sections=['quotes','charts','trade','account','settings'];
   const titles={charts:['市場圖表','觀察走勢，掌握每個時間點'],quotes:['選擇權報價','CALL 與 PUT · 點選價格切換商品'],trade:['模擬交易','市價、限價委託與風控'],account:['我的帳戶','部位、紀錄與條件策略'],settings:['偏好設定','商品、時間範圍與圖表工具']};
   const heading=make('header','app-screen-heading','<div><h1></h1><p></p></div><span class="app-swipe-hint" aria-hidden="true">‹ 滑動切頁 ›</span>');
   heading.setAttribute('aria-label','頁面標題，左右滑動可切換主要頁面');
   $('.ws-header').after(heading);
   const quickOrder=make('button','app-quick-order','下單');quickOrder.type='button';quickOrder.setAttribute('aria-label','開啟目前商品的下單面板');$('.terminal-header-tools').append(quickOrder);
   const title=heading.querySelector('h1'),subtitle=heading.querySelector('p');
-  let active=document.body.dataset.terminalView||'charts';
+  let active=document.body.dataset.terminalView||'quotes';
   const scrollPositions=new Map();
   let animation=null;
   function updateHeading(key){title.textContent=titles[key][0];subtitle.textContent=titles[key][1];}
