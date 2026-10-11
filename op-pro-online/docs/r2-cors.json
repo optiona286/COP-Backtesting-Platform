@@ -1,6 +1,6 @@
 [
   {
-    "AllowedOrigins": ["http://localhost:5100"],
+    "AllowedOrigins": ["http://localhost:5100", "https://optiona286.github.io"],
     "AllowedMethods": ["GET", "HEAD"],
     "AllowedHeaders": ["*"],
     "MaxAgeSeconds": 3600
