@@ -57,6 +57,7 @@ const mimeTypes = {
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
@@ -962,7 +963,7 @@ function serveStatic(req, res, pathname) {
   const rel = pathname === "/" ? "index.html" : decodeURIComponent(pathname.slice(1));
   const full = path.resolve(ROOT, rel);
   if (!full.startsWith(ROOT + path.sep)) return sendJson(res, 403, { ok: false, message: "Forbidden" });
-  if (rel !== "index.html" && !/^(css|js|favicon|sound)\//.test(rel.replace(/\\/g, "/")) && !/^data\/(?:online-index\.json|manifest\.json|(?:options|tx|taiex)\/(?:manifest\.json|\d{4}-\d{2}-\d{2}\.json\.gz))$/.test(rel.replace(/\\/g, "/"))) return sendJson(res, 403, { ok: false, message: "Forbidden" });
+  if (!['index.html','manifest.webmanifest','sw.js'].includes(rel) && !/^(css|js|favicon|sound)\//.test(rel.replace(/\\/g, "/")) && !/^data\/(?:online-index\.json|manifest\.json|(?:options|tx|taiex)\/(?:manifest\.json|\d{4}-\d{2}-\d{2}\.json\.gz))$/.test(rel.replace(/\\/g, "/"))) return sendJson(res, 403, { ok: false, message: "Forbidden" });
   fs.readFile(full, (err, data) => {
     if (err) return sendJson(res, 404, { ok: false, message: "Not found" });
     const type = mimeTypes[path.extname(full).toLowerCase()] || "application/octet-stream";

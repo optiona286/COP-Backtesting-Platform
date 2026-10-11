@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "OP PRO",
+  "short_name": "OP PRO",
+  "description": "選擇權報價、技術分析與模擬交易",
+  "lang": "zh-TW",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101722",
+  "theme_color": "#101722",
+  "icons": [
+    {"src":"favicon/app-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"favicon/app-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"favicon/app-icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}

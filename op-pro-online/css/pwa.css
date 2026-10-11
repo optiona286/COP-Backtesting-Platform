@@ -1,0 +1,13 @@
+#opProLoading{background:#101722;transition:none;backdrop-filter:none}
+#opProLoading.is-hidden{display:none}
+#opProLoading .op-pro-loading-card{background:none;border:0;box-shadow:none;padding:32px;text-align:center}
+#opProLoading .app-launch-icon{width:104px;height:104px;border-radius:24px;object-fit:contain;display:block;margin:0 auto 20px}
+#opProLoading .op-pro-loading-brand{color:#f5f7fb;font-size:24px;letter-spacing:1px}
+#opProLoading .op-pro-loading-title{color:#b8c3d3;font-size:13px;margin-top:20px}
+#opProLoading .op-pro-loading-detail{color:#8592a5;font-size:11px}
+.app-mode .terminal-mobile-nav button{transition:none}
+.app-install-group{margin:14px 12px;padding:16px;background:var(--term-panel);border-radius:14px}
+.app-install-group h2{font-size:13px;margin:0 0 12px}
+.app-install-group button{width:100%;min-height:44px;font-size:14px;border-radius:10px}
+.app-install-group p{font-size:12px;line-height:1.7;color:var(--term-muted);margin:10px 0 0}
+.app-install-help[hidden]{display:none}

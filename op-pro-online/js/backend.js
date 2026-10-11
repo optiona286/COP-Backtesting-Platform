@@ -285,8 +285,8 @@ window.loadTaiexForSelectedTradeDate = loadTaiexForSelectedTradeDate;
 
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('Initializing backend contract loader...');
-  await loadContractsFromBackend();
-  setupBackendContractListener();
+  try { await loadContractsFromBackend(); setupBackendContractListener(); }
+  finally { window.dispatchEvent(new Event('oppro:ready')); }
 });
 
 async function loadContractsFromBackend() {

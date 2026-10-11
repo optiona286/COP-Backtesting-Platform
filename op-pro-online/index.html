@@ -4,27 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>OP PRO Online｜選擇權交易研究工作台</title>
+  <meta name="theme-color" content="#101722">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OP PRO">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="favicon/app-icon-180.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/workspace.css">
   <link rel="stylesheet" href="css/mobile-app.css">
   <link rel="stylesheet" href="css/app-visual.css">
+  <link rel="stylesheet" href="css/pwa.css">
+  <script src="js/pwa.js" defer></script>
   <script src="js/config.js"></script>
   <script src="js/compressed-data.js"></script>
-  <link rel="icon" type="image/jpeg" href="favicon/Favicon.png">
+  <link rel="icon" type="image/png" href="favicon/app-icon-192.png">
 </head>
 <body class="dark-mode app-mode">
   <div id="opProLoading" class="op-pro-loading" role="status" aria-live="polite">
-    <div class="op-pro-loading-grid"></div>
     <div class="op-pro-loading-card">
-      <div class="op-pro-loading-orbit">
-        <span class="op-pro-loading-ring ring-a"></span>
-        <span class="op-pro-loading-ring ring-b"></span>
-        <span class="op-pro-loading-ring ring-c"></span>
-        <img class="op-pro-loading-logo" src="favicon/Favicon.png" alt="OP PRO">
-      </div>
+      <img class="app-launch-icon" src="favicon/app-icon-192.png" alt="OP PRO">
       <div class="op-pro-loading-brand">OP PRO</div>
-      <div id="opProLoadingTitle" class="op-pro-loading-title">系統啟動中</div>
-      <div id="opProLoadingDetail" class="op-pro-loading-detail">正在準備交易介面</div>
+      <div id="opProLoadingTitle" class="op-pro-loading-title">正在啟動</div>
+      <div id="opProLoadingDetail" class="op-pro-loading-detail">準備商品與報價</div>
       <div class="op-pro-loading-progress"><span></span></div>
     </div>
   </div>

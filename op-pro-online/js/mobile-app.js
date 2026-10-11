@@ -13,7 +13,6 @@
   const title=heading.querySelector('h1'),subtitle=heading.querySelector('p');
   let active=document.body.dataset.terminalView||'quotes';
   const scrollPositions=new Map();
-  let animation=null;
   function updateHeading(key){title.textContent=titles[key][0];subtitle.textContent=titles[key][1];}
   updateHeading(active);
 
@@ -65,9 +64,6 @@
     if(previous)scrollPositions.set(previous,window.scrollY);
     active=key;updateHeading(key);
     closeSheet();
-    const target={charts:$('.rpanel'),quotes:$('.tpanel'),trade:tradeHome,account:$('.terminal-ledger'),settings:$('#workspaceControls')}[key];
-    animation?.cancel();
-    if(!reduced.matches&&key!==previous){const direction=sections.indexOf(key)>=sections.indexOf(previous)?1:-1;animation=target.animate([{opacity:.3,transform:`translateX(${direction*14}px)`},{opacity:1,transform:'translateX(0)'}],{duration:200,easing:'cubic-bezier(.2,.7,.2,1)'});}
     requestAnimationFrame(()=>window.scrollTo({top:scrollPositions.get(key)||0,behavior:'instant'}));
   });
   // Navigation gesture belongs to the title region; chart pinch/pan stays untouched.
@@ -88,11 +84,6 @@
         document.getElementById('tabTA').click();
       });
     });
-  });
-  $('.terminal-ledger-tabs').addEventListener('click',event=>{
-    if(!event.target.closest('button')||reduced.matches)return;
-    const pane=$('.account > .card:not([hidden])');
-    pane?.animate([{opacity:.35,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:170,easing:'ease-out'});
   });
 
   const playback=$('.btbar');

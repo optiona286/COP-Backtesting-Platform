@@ -63,6 +63,7 @@ function checkLimitOrders(c){ window.checkLimitOrders && window.checkLimitOrders
   }
 
   window.showOPProLoading = function(title='資料載入中', detail='正在同步交易資料'){
+    if(!active.has('startup')) return null;
     const token = `loading-${++seq}`;
     active.set(token, true);
     if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
@@ -84,10 +85,13 @@ function checkLimitOrders(c){ window.checkLimitOrders && window.checkLimitOrders
     }, delay);
   };
 
-  window.addEventListener('load', ()=>{
+  function finishStartup(){
     setTimeout(()=>{
       active.delete('startup');
-      window.hideOPProLoading(null, 420);
-    }, 760);
-  });
+      window.hideOPProLoading(null, 0);
+    }, 200);
+  }
+  window.addEventListener('oppro:ready', finishStartup, {once:true});
+  // A failed network or external script must never trap the user behind the splash.
+  setTimeout(()=>{active.clear();finishStartup();}, 10000);
 })();
