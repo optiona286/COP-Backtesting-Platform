@@ -24,7 +24,7 @@
     const ma=isTX?(typeof _lwcMaSeries==='undefined'?{}:_lwcMaSeries):(typeof _taMaSeries==='undefined'?{}:_taMaSeries);
     if(chart!==lastChart){hover=null;lastChart=chart;}
     if(chart&&!subscribed.has(chart)){subscribed.add(chart);chart.subscribeCrosshairMove(param=>{if(chart!==lastChart)return;hover=param.time&&param.point&&param.seriesData.has(candle)?param:null;schedule();});}
-    const c=hover?.seriesData.get(candle);
+    const c=hover?.seriesData.get(candle)||(document.body.classList.contains('chart-focus-open')?candle?.data()?.at(-1):null);
     panel.hidden=!c||!document.getElementById('tabTA').classList.contains('active')||document.getElementById('compareKPanel')?.classList.contains('open');
     averages.hidden=panel.hidden;
     if(panel.hidden)return;

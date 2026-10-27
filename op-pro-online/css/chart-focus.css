@@ -1,0 +1,23 @@
+.chartWrap{position:relative}
+.chart-focus-toggle{position:absolute;right:14px;bottom:18px;z-index:45;width:42px;height:42px;display:grid;place-items:center;border:1px solid #71809666;border-radius:12px;background:#101722bb;color:#e6edf7;backdrop-filter:blur(10px);cursor:pointer;touch-action:manipulation}
+.chart-focus-toggle svg,.chart-focus-nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.chart-focus-header{display:none}
+body.chart-focus-open{overflow:hidden!important}
+body.chart-focus-open>.rpanel.chart-focus-panel{position:fixed!important;inset:0!important;z-index:100000!important;width:100%!important;height:100dvh!important;max-width:none!important;min-width:0!important;max-height:none!important;box-sizing:border-box;display:flex!important;flex-direction:column!important;gap:0!important;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)!important;background:#0b1017!important;border:0!important;border-radius:0!important;overflow:hidden!important}
+.chart-focus-panel:fullscreen{height:100%!important}
+.chart-focus-panel>:not(.chart-focus-header):not(.ws-panel-heading):not(.chartCard){display:none!important}
+.chart-focus-panel>.chart-focus-header{display:flex;align-items:center;gap:10px;flex:none;min-height:48px;padding:4px 10px;background:#101a27;border-bottom:1px solid #ffffff14}
+.chart-focus-symbol{flex:1;min-width:0;text-align:center;font-size:15px;font-weight:700;line-height:1.35;color:#edf3ff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chart-focus-nav{width:40px;height:40px;display:grid;place-items:center;flex:none;border:1px solid #ffffff14;border-radius:10px;background:#ffffff08;color:#c9d8ed;touch-action:manipulation}
+.chart-focus-nav:disabled{opacity:.25}
+.chart-focus-panel>.ws-panel-heading{display:block!important;flex:none;padding:0!important;min-height:0!important;background:#0e151f!important;border-radius:0!important}
+.chart-focus-panel>.ws-panel-heading>strong,.chart-focus-panel>.ws-panel-heading>span,.chart-focus-panel>#kinfo{display:none!important}
+.chart-focus-panel .app-chart-info{width:100%!important;margin:0!important;padding:6px 8px!important;box-sizing:border-box}
+.chart-focus-panel .app-chart-info-header{display:flex!important}
+.chart-focus-panel .chartCard{display:flex!important;flex-direction:column!important;flex:1!important;min-height:0!important;height:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important}
+.chart-focus-panel .chartTabs,.chart-focus-panel #protractorFloat,.chart-focus-panel .chartCard>:not(.chartWrap){display:none!important}
+.chart-focus-panel .chartWrap{flex:1!important;min-height:0!important;height:auto!important;width:100%!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important}
+.chart-focus-panel .chartPane{height:100%!important;min-height:0!important}
+.chart-focus-panel #chartTrend,.chart-focus-panel #chartCompare,.chart-focus-panel #chartTimeline{display:none!important}
+.chart-focus-panel .chart-focus-toggle{bottom:max(16px,env(safe-area-inset-bottom));right:12px}
+body.chart-focus-open>.app-bottom-nav,body.chart-focus-open>nav,body.chart-focus-open>.app-sheet{display:none!important}
