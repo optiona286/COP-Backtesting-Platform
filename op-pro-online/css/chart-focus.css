@@ -44,3 +44,13 @@ body.chart-focus-open>.chart-focus-panel>.chart-focus-readouts{display:flex!impo
 .chart-focus-readouts>.app-chart-info-ma .app-chart-info-cell{display:flex;flex-direction:row;align-items:baseline;gap:4px}
 .chart-focus-readouts>.app-chart-info-ma .app-chart-info-cell>span{font-size:10px!important}
 .chart-focus-readouts>.app-chart-info-ma .app-chart-info-cell>b{font-size:11px!important;font-weight:500}
+/* Compact quote strip and a borderless control above the phone navigation. */
+.app-mode .app-market-heading{min-height:50px}
+.app-market-heading .app-chart-info-header>span,.app-market-heading .app-chart-info-values>.app-chart-info-cell>span{font-size:11px}
+.app-market-heading .app-chart-info-header time,.app-market-heading .app-chart-info-values>.app-chart-info-cell>b{font-size:clamp(13px,3.4vw,17px)}
+.chart-focus-readouts>.app-chart-info:not([hidden]){min-height:52px!important;padding:3px 4px!important}
+.chart-focus-readouts .app-chart-info-header>span,.chart-focus-readouts .app-chart-info-values>.app-chart-info-cell>span{font-size:11px!important}
+.chart-focus-readouts .app-chart-info-header time,.chart-focus-readouts .app-chart-info-values>.app-chart-info-cell>b{font-size:clamp(13px,3.5vw,18px)!important}
+.chart-focus-readouts>.app-chart-info-ma:not([hidden]){padding:4px 8px!important;gap:3px 10px}
+.chart-focus-toggle{bottom:calc(88px + env(safe-area-inset-bottom));border:0!important;outline-offset:3px;box-shadow:none;background:#10172299}
+.chart-focus-panel .chart-focus-toggle{bottom:calc(82px + env(safe-area-inset-bottom));border:0!important}
