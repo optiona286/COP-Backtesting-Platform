@@ -21,3 +21,13 @@ body.chart-focus-open>.rpanel.chart-focus-panel{position:fixed!important;inset:0
 .chart-focus-panel #chartTrend,.chart-focus-panel #chartCompare,.chart-focus-panel #chartTimeline{display:none!important}
 .chart-focus-panel .chart-focus-toggle{bottom:max(16px,env(safe-area-inset-bottom));right:12px}
 body.chart-focus-open>.app-bottom-nav,body.chart-focus-open>nav,body.chart-focus-open>.app-sheet{display:none!important}
+/* OHLC is the primary readout, directly below the instrument header. */
+.app-mode .app-market-heading{min-height:62px}
+.app-market-heading .app-chart-info-header>span,.app-market-heading .app-chart-info-values>.app-chart-info-cell>span{font-size:13px;line-height:1.3}
+.app-market-heading .app-chart-info-header time,.app-market-heading .app-chart-info-values>.app-chart-info-cell>b{font-size:clamp(15px,3.9vw,21px);font-weight:700;line-height:1.35;letter-spacing:-.4px}
+.chart-focus-panel>.ws-panel-heading{min-height:66px!important}
+.chart-focus-panel .app-market-heading>.app-chart-info{position:relative!important;inset:auto!important;min-height:66px;align-items:center;padding:5px 4px!important;background:#080d14!important;border-bottom:1px solid #ffffff18}
+.chart-focus-panel .app-chart-info-header,.chart-focus-panel .app-chart-info-values>.app-chart-info-cell{padding:3px 1px!important;gap:3px}
+.chart-focus-panel .app-market-heading .app-chart-info-header time,.chart-focus-panel .app-market-heading .app-chart-info-values>.app-chart-info-cell>b{font-size:clamp(16px,4.1vw,23px)}
+.chart-focus-panel .chartWrap>.app-chart-info-ma{top:3px;font-size:11px;background:#0b1017b3}
+.chart-focus-panel .chartWrap>.app-chart-info-ma .app-chart-info-cell>b{font-size:11px;font-weight:500}
